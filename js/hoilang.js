@@ -406,3 +406,102 @@ function hlThongKe(opts = {}){
     phanBoDoKho: kho
   };
 }
+
+/* ============================================================
+   PHẦN GHÉP VÀO GAME — từ đây trở xuống dùng quy ước toạ độ của game:
+   ô = [x, y] = [cột, hàng]  (engine sinh đề ở trên dùng [hàng, cột])
+   ============================================================ */
+
+const hlDoi = ([r,c]) => [c,r];        // [hàng,cột] → [x,y]
+
+/* Dựng một màn hội làng hoàn chỉnh, sẵn sàng nhét vào LEVELS */
+function taoManHoiLang(opt){
+  const de = sinhDe({
+    n: opt.chars.length, co: opt.co, soMoc: opt.soMoc, soVatCan: opt.soVatCan,
+    omHet: opt.omHet, doKho: opt.doKho, seed: opt.seed, soLan: opt.soLan ?? 80000
+  });
+  if(!de) return null;
+
+  const vung = de.vung.map(cells => cells.map(hlDoi));
+  return {
+    type: "hoilang",
+    name: opt.name || "Hội làng",
+    cols: de.n, rows: de.n,
+    chars: opt.chars.slice(),
+    scene: opt.scene || "",
+    story: opt.story || "",
+    vung,                                            // vung[i] = ô của chars[i]
+    tenVung: opt.tenVung || de.vung.map((_,i)=>"Vùng "+(i+1)),
+    moc: de.moc.map(m => ({ c: opt.chars[m.nguoi], o: hlDoi(m.o) })),
+    vatCan: de.vatCan.map(hlDoi),
+    mocArt: opt.mocArt || "cayda",
+    canArt: opt.canArt || "ao",
+    loiGiai: Object.fromEntries(de.loiGiai.map((o,i) => [opt.chars[i], hlDoi(o)])),
+    doKho: de.doKho, seed: de.seed, khongGian: de.khongGian
+  };
+}
+
+/* Chấm luật — trả về mảng true/false/null đúng quy ước evalCons của game:
+   true = xanh, false = đỏ, null = chưa đủ thông tin để phán */
+function hlLuat(lv){
+  const ds = [
+    { txt: "Mỗi hàng chỉ một người" },
+    { txt: "Mỗi cột chỉ một người" },
+    { txt: "Không ai đứng sát ai, kể cả góc chéo" },
+    { txt: "Ai cũng đứng trong vùng của mình" },
+  ];
+  for(const m of lv.moc)
+    ds.push({ txt: `${CHARS[m.c].name} đứng cạnh ${ENVS[lv.mocArt].name}` });
+  return ds;
+}
+
+function hlCham(lv){
+  const P = lv.chars.map(c => place[c]);
+  const daDat = P.filter(Boolean);
+  const dayDu = daDat.length === lv.chars.length;
+  const res = [];
+
+  /* 1–2. trùng hàng / trùng cột */
+  for(const truc of [1,0]){                       // y = hàng, x = cột
+    const v = daDat.map(o => o[truc]);
+    res.push(new Set(v).size !== v.length ? false : dayDu ? true : null);
+  }
+
+  /* 3. đứng sát nhau (kể cả chéo) */
+  let sat = false;
+  for(let i=0;i<daDat.length;i++) for(let j=i+1;j<daDat.length;j++)
+    if(Math.abs(daDat[i][0]-daDat[j][0])<=1 && Math.abs(daDat[i][1]-daDat[j][1])<=1) sat = true;
+  res.push(sat ? false : dayDu ? true : null);
+
+  /* 4. đúng vùng của mình */
+  let lacVung = false, duVung = true;
+  lv.chars.forEach((c,i) => {
+    const p = P[i];
+    if(!p){ duVung = false; return; }
+    if(!lv.vung[i].some(([x,y]) => x===p[0] && y===p[1])) lacVung = true;
+  });
+  res.push(lacVung ? false : duVung ? true : null);
+
+  /* 5+. từng mốc */
+  for(const m of lv.moc){
+    const p = place[m.c];
+    if(!p){ res.push(null); continue; }
+    res.push(Math.abs(p[0]-m.o[0]) + Math.abs(p[1]-m.o[1]) === 1);
+  }
+  return res;
+}
+
+/* Ô này có đặt người được không: phải trong vùng của người đó, không phải mốc/vật cản */
+function hlDatDuoc(lv, c, x, y){
+  if(lv.vatCan.some(o => o[0]===x && o[1]===y)) return false;
+  if(lv.moc.some(m => m.o[0]===x && m.o[1]===y)) return false;
+  const i = lv.chars.indexOf(c);
+  return i >= 0 && lv.vung[i].some(o => o[0]===x && o[1]===y);
+}
+
+/* Ô này thuộc vùng của ai (để tô màu) — trả chỉ số nhân vật hoặc -1 */
+function hlVungCua(lv, x, y){
+  for(let i=0;i<lv.vung.length;i++)
+    if(lv.vung[i].some(o => o[0]===x && o[1]===y)) return i;
+  return -1;
+}

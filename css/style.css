@@ -268,3 +268,32 @@ h1 .tilde{color:var(--la)}
 @keyframes tutBounce{0%,100%{transform:translateX(-50%) translateY(0)}
   50%{transform:translateX(-50%) translateY(-10px)}}
 @media (prefers-reduced-motion:reduce){.tut-hand{animation:none}}
+
+/* ===== Hội làng: lưới có vùng địa danh tô màu ===== */
+.dot.hoi{border-radius:50%;background:var(--hoe);width:16px;height:16px}
+.board.hoi{gap:3px}
+.board.hoi .cell{background:var(--diep-sang)}
+.board.hoi .cell.canh{cursor:default}
+/* tám màu địa danh — nhạt, để hình nhân vật vẫn nổi lên trên */
+.board.hoi .cell.v0{background:#F3D9C0} .board.hoi .cell.v1{background:#CFE0BC}
+.board.hoi .cell.v2{background:#C9DCE6} .board.hoi .cell.v3{background:#E8D5E4}
+.board.hoi .cell.v4{background:#EDE3B4} .board.hoi .cell.v5{background:#D6D2C4}
+.board.hoi .cell.v6{background:#E9C9C2} .board.hoi .cell.v7{background:#C6DED6}
+.board.hoi .cell.sel-target::after{
+  content:"";position:absolute;inset:4px;border:3px dashed var(--son);border-radius:6px}
+/* khay: chấm màu cho biết ai thuộc vùng nào */
+.tray-slot[class*="tv"]{position:relative}
+.tray-slot[class*="tv"]::before{
+  content:"";position:absolute;top:0;right:6px;width:11px;height:11px;
+  border-radius:50%;border:2px solid var(--muc)}
+.tray-slot.tv0::before{background:#F3D9C0} .tray-slot.tv1::before{background:#CFE0BC}
+.tray-slot.tv2::before{background:#C9DCE6} .tray-slot.tv3::before{background:#E8D5E4}
+.tray-slot.tv4::before{background:#EDE3B4} .tray-slot.tv5::before{background:#D6D2C4}
+.tray-slot.tv6::before{background:#E9C9C2} .tray-slot.tv7::before{background:#C6DED6}
+
+/* ===== Nút 💡: đứng nép, chỉ sáng gọi mời khi bé đang bí ===== */
+#hintBtn{opacity:.55;transition:opacity .3s}
+#hintBtn.glow{opacity:1;border-color:var(--son);background:#F3D9A8;
+  animation:hintPulse 1.1s ease-in-out infinite}
+@keyframes hintPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@media (prefers-reduced-motion:reduce){#hintBtn.glow{animation:none}}

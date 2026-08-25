@@ -3,8 +3,9 @@
    ============================================================ */
 
 const $ = id => document.getElementById(id);
+const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
 
-let _lastBad = 0;   // đếm chip đỏ để kêu "sai" đúng lúc chuyển đỏ
+let _prevRes = [], _prevResLv = null;   // theo dõi CHUYỂN đỏ theo từng chip (kêu "sai" + telemetry A3)
 
 function render(){
   const lv=L(), res=evalCons();
@@ -17,8 +18,10 @@ function render(){
   const sb=$("sayBtn");
   if(sb) sb.onclick=()=>speak(`Màn ${cur+1}. ${lv.name}. ${stripTags(lv.scene)}`);
 
-  const list = lv.type==="matrix" ? lv.clues : lv.type==="story" ? lv.panels : lv.cons;
-  const head = lv.type==="matrix" ? "Manh mối" : lv.type==="story" ? "Bốn khung tranh" : "Việc cần xếp";
+  const list = lv.type==="matrix" ? lv.clues : lv.type==="story" ? lv.panels
+           : lv.type==="hoilang" ? hlLuat(lv) : lv.cons;
+  const head = lv.type==="matrix" ? "Manh mối" : lv.type==="story" ? "Bốn khung tranh"
+           : lv.type==="hoilang" ? "Luật hội làng" : "Việc cần xếp";
   $("chips").innerHTML = `<h3>${head}</h3>` +
     list.map((k,i)=>`<div class="chip ${res[i]===true?'ok':res[i]===false?'bad':''}" data-i="${i}"><span class="mark"></span><span class="chip-t">${decorateChipText(k.txt||k.label,k,lv)}</span></div>`).join("");
   $("chips").querySelectorAll(".chip").forEach(el=>el.onclick=()=>highlightCons(+el.dataset.i));
@@ -28,11 +31,17 @@ function render(){
     el.onpointerenter=e=>{ if(e.pointerType==="mouse") flashRef(kind,id); };   // hover chỉ là quà thêm cho desktop
   });
 
-  const badN = res.filter(r=>r===false).length;
-  if(badN>_lastBad && window.SFX) SFX.play("sai");
-  _lastBad = badN;
+  if(_prevResLv!==lv.id){ _prevRes=[]; _prevResLv=lv.id; }
+  let newRed=false;
+  res.forEach((r,i)=>{ if(r===false && _prevRes[i]!==false){ newRed=true; attRed(i); } });
+  if(newRed && window.SFX) SFX.play("sai");
+  _prevRes = res.slice();
+
+  /* Nút 💡 bình thường đứng nép; chỉ sáng gọi mời khi bé đang bí thật sự */
+  $("hintBtn").classList.toggle("glow", attStruggling());
 
   if(lv.type==="matrix") renderMatrix(lv);
+  else if(lv.type==="hoilang") renderHoiLang(lv);
   else if(lv.type==="story") renderStory(lv);
   else renderBoard(lv);
 
@@ -182,6 +191,7 @@ function giveHint(){
   const pick=pickHintCon();
   if(!pick){ $("nameplate").innerHTML="💡 Sắp xong rồi — xem còn ai chưa được đặt nào!"; return; }
   hintTier=Math.min(hintTier+1,3);
+  attHint(hintTier);
   const {i,k}=pick;
   if(hintTier===1){
     const txt=stripTags(k.txt||k.cue||k.label||"");
@@ -485,9 +495,78 @@ function tapPanel(i){
   if(sAssign[i]){ held=sAssign[i]; sAssign[i]=null; render(); }     // nhấc mảnh ra khỏi khung
 }
 
+/* ===== Hội làng: lưới có VÙNG tô màu, mốc cảnh vật và vật cản ===== */
+function renderHoiLang(lv){
+  $("tray").style.display="";
+  const wide = window.innerWidth>=880;
+  const avail = wide ? Math.min(window.innerWidth-440,700) : Math.min(window.innerWidth,660)-60;
+  const cw = Math.min(76, Math.floor((avail-30)/lv.cols));
+
+  let html=`<div class="board hoi" style="--cw:${cw}px;grid-template-columns:repeat(${lv.cols},${cw}px)">`;
+  for(let y=0;y<lv.rows;y++) for(let x=0;x<lv.cols;x++){
+    const v   = hlVungCua(lv,x,y);
+    const can = lv.vatCan.some(o=>o[0]===x&&o[1]===y);
+    const moc = lv.moc.find(m=>m.o[0]===x&&m.o[1]===y);
+    const ch  = charAt(x,y);
+    const nhan = held && !ch && hlDatDuoc(lv,held,x,y);
+
+    let cls="cell";
+    if(v>=0) cls+=" v"+(v%8);
+    if(can||moc) cls+=" canh";
+    if(nhan) cls+=" sel-target";
+
+    /* viền dày ở cạnh giáp vùng khác — cho mắt thấy ranh giới địa danh */
+    let vien="";
+    for(const [dx,dy,ten] of [[0,-1,"top"],[0,1,"bottom"],[-1,0,"left"],[1,0,"right"]]){
+      const nx=x+dx, ny=y+dy;
+      const ngoai = nx<0||ny<0||nx>=lv.cols||ny>=lv.rows;
+      if(v>=0 && (ngoai || hlVungCua(lv,nx,ny)!==v)) vien+=`border-${ten}:3px solid var(--muc);`;
+    }
+
+    let inner="";
+    if(can) inner+=ENVS[lv.canArt].svg;
+    if(moc) inner+=ENVS[lv.mocArt].svg;
+    if(ch)  inner+=`<div class="tok ${held===ch?'held':''}">${CHARS[ch].svg}</div>`;
+
+    const lbl = ch?CHARS[ch].name : moc?ENVS[lv.mocArt].name : can?ENVS[lv.canArt].name
+              : v>=0?lv.tenVung[v] : `ô trống ${x+1},${y+1}`;
+    html+=`<button class="${cls}" style="${vien}" data-x="${x}" data-y="${y}" aria-label="${lbl}">${inner}</button>`;
+  }
+  html+="</div>";
+  $("stagebox").innerHTML=html;
+  $("stagebox").querySelectorAll(".cell").forEach(c=>{
+    const x=+c.dataset.x, y=+c.dataset.y;
+    c.onclick=()=>tapHoiLang(lv,x,y);
+    c.onmouseenter=()=>{ const v=hlVungCua(lv,x,y), ch=charAt(x,y);
+      const m=lv.moc.find(o=>o.o[0]===x&&o.o[1]===y);
+      $("nameplate").innerHTML = ch?`<b>${CHARS[ch].name}</b>`
+        : m?`<b>${cap(ENVS[lv.mocArt].name)}</b> — ${CHARS[m.c].name} phải đứng kề bên`
+        : lv.vatCan.some(o=>o[0]===x&&o[1]===y)?`<b>${cap(ENVS[lv.canArt].name)}</b> — không đứng lên được`
+        : v>=0?`<b>${lv.tenVung[v]}</b>` : ""; };
+    c.onmouseleave=()=>{ $("nameplate").innerHTML=""; };
+  });
+
+  $("tray").innerHTML=lv.chars.map((c,i)=>
+    `<button class="tray-slot ${held===c?'held':''} ${place[c]?'placed':''} tv${i%8}" data-c="${c}">
+      ${CHARS[c].svg}<span>${CHARS[c].name}</span></button>`).join("");
+  $("tray").querySelectorAll(".tray-slot").forEach(s=>s.onclick=()=>{
+    const c=s.dataset.c; if(place[c]) return;
+    held = held===c ? null : c; render();
+  });
+}
+
+function tapHoiLang(lv,x,y){
+  const ch=charAt(x,y);
+  if(held){
+    if(ch){ held=ch; place[ch]=null; render(); return; }        // đổi sang nhấc người đang đứng
+    if(hlDatDuoc(lv,held,x,y)){ place[held]=[x,y]; held=null; }
+    render(); return;
+  }
+  if(ch){ held=ch; place[ch]=null; render(); }
+}
+
 function showName(x,y){
   const em=envCellMap(), e=em[key(x,y)], ex=extraAt(x,y);
-  const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
   let t="";
   if(ex && !charAt(x,y)) t=`<b>${CHARS[ex.c].name}</b>${ex.note?` — <i>${ex.note}</i>`:""}`;
   else if(e) t=`<b>${cap(ENVS[e].name)}</b> — ${LORE[e]||""}`;

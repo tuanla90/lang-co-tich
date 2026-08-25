@@ -111,6 +111,7 @@ function evalCons(){
   /* Màn kể chuyện: mỗi khung đúng một mảnh. Chưa đặt = null, đặt sai = đỏ. */
   if(lv.type==="story")
     return lv.panels.map((p,i)=> sAssign[i] ? sAssign[i]===p.answer : null);
+  if(lv.type==="hoilang") return hlCham(lv);
   if(lv.type==="matrix"){
     return lv.clues.map(k=>{
       if(k.t==="mUniq"){
@@ -172,7 +173,60 @@ function isWon(res){
   const lv=L();
   if(lv.type==="story")
     return res.every(r=>r===true) && lv.panels.every((p,i)=>sAssign[i]);
+  if(lv.type==="hoilang")
+    return res.every(r=>r===true) && lv.chars.every(c=>place[c]);
   if(lv.type==="matrix")
     return res.every(r=>r===true) && lv.rows.every(r=>mAssign[r]);
   return res.every(r=>r===true) && lv.chars.every(c=>place[c]);
+}
+
+/* ============================================================
+   A3: BỘ GHI LƯỢT CHƠI — telemetry cục bộ nuôi C2 (bảng kỹ năng).
+   Một "lượt" = từ lúc vào màn đến khi thắng hoặc bỏ sang màn khác.
+   "Xếp lại" KHÔNG mở lượt mới — chỉ đếm resets, bộ đếm giữ nguyên.
+   Ghi vào localStorage "lct_log" (giữ 500 bản ghi gần nhất).
+   ============================================================ */
+let att = null;
+
+function attStart(levelId){
+  att = { levelId, t0: Date.now(), resets: 0, redTotal: 0, redMaxRepeat: 0,
+          _redPerChip: {}, hintTaps: 0, hintMaxTier: 0 };
+}
+function attReset(){ if (att) att.resets++; }
+function attRed(i){
+  if (!att) return;
+  att.redTotal++;
+  att._redPerChip[i] = (att._redPerChip[i] || 0) + 1;
+  if (att._redPerChip[i] > att.redMaxRepeat) att.redMaxRepeat = att._redPerChip[i];
+}
+function attHint(tier){
+  if (!att) return;
+  att.hintTaps++;
+  if (tier > att.hintMaxTier) att.hintMaxTier = tier;
+}
+/* "Đang bí" — điều kiện làm nút 💡 sáng lên gọi mời */
+function attStruggling(){
+  return !!att && (att.redMaxRepeat >= 3 || att.redTotal >= 5 || att.resets >= 2);
+}
+function attFinish(finished){
+  if (!att) return;
+  const secs = (Date.now() - att.t0) / 1000;
+  const rec = {
+    levelId: att.levelId, ts: Date.now(),
+    resets: att.resets, redTotal: att.redTotal, redMaxRepeat: att.redMaxRepeat,
+    hintTaps: att.hintTaps, hintMaxTier: att.hintMaxTier,
+    /* "sạch" = thắng không chip đỏ nào và không cần chỉ tận ô */
+    clean: finished && att.redTotal === 0 && att.hintMaxTier < 3,
+    timeBucket: secs < 60 ? "nhanh" : secs < 180 ? "vừa" : "lâu",
+    finished,
+  };
+  att = null;
+  /* lướt qua màn dưới 5 giây không tương tác gì thì không ghi (tua màn, xem qua) */
+  if (!finished && rec.redTotal === 0 && rec.resets === 0 && rec.hintTaps === 0 && secs < 5) return;
+  try {
+    const log = JSON.parse(localStorage.getItem("lct_log") || "[]");
+    log.push(rec);
+    while (log.length > 500) log.shift();
+    localStorage.setItem("lct_log", JSON.stringify(log));
+  } catch (e) {}
 }

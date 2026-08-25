@@ -22,6 +22,7 @@ const chShort = name => name.split("·")[0].trim().toLowerCase();
 function win(){
   if($("veil").classList.contains("show")) return;
   if(!done.includes(cur)) done.push(cur);
+  attFinish(true);
   saveProgress();
   if(window.SFX) SFX.play("dung");
   const nxt = LEVELS[cur+1];
@@ -34,10 +35,14 @@ function win(){
 }
 
 function load(i){
+  /* A3: cùng màn = "Xếp lại" (đếm reset, giữ bộ đếm); khác màn = chốt lượt cũ, mở lượt mới */
+  const nid = LEVELS[i] && LEVELS[i].id;
+  if(att && att.levelId===nid) attReset();
+  else { attFinish(false); attStart(nid); }
   cur=i; place={}; held=null; mAssign={}; sAssign={};
   hintTier=0; hintCount=0;          // thang gợi ý làm lại từ đầu mỗi màn
   const lv=LEVELS[i];
-  if(lv.type==="place") for(const c of lv.chars) place[c]=null;
+  if(lv.type==="place"||lv.type==="hoilang") for(const c of lv.chars) place[c]=null;
   else if(lv.type==="story") lv.panels.forEach((p,j)=>sAssign[j]=null);
   else for(const r of lv.rows) mAssign[r]=null;
   $("veil").classList.remove("show"); render();
