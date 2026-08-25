@@ -147,6 +147,154 @@ function flashRef(kind,id){
   flashEls(els);
 }
 
+/* ============================================================
+   D3: GỢI Ý NÂNG DẦN — bấm 💡 lần 1: lời nói · lần 2: nháy
+   đối tượng · lần 3: bàn tay chỉ thẳng ô cần điền.
+   Bậc 3 dùng bộ giải thật (backtracking) — không hard-code đáp án.
+   ============================================================ */
+let hintTier=0, hintCount=0;   // reset trong load(); hintCount để dành cho telemetry A3
+
+const HINT_STRAT={
+  adjEnv:"Tìm xem chỗ đó nằm ở đâu trên bàn trước đã.",
+  adjChar:"Hai nhân vật này phải đứng sát vách nhau.",
+  notAdjEnv:"Chữ KHÔNG là quan trọng đấy — phải tránh xa ra.",
+  notAdjChar:"Chữ KHÔNG là quan trọng đấy — hai người này phải tách nhau ra.",
+  behind:"Nhìn mũi tên đỏ chỉ hướng mặt — sau lưng là phía ngược lại.",
+  onEnv:"Không phải đứng cạnh đâu — đứng LÊN hẳn đấy!",
+  hideIn:"Phải chui hẳn vào trong mà nấp.",
+  listen:"Kề bên nhưng đừng để bị thấy: sau lưng, sau rào, hoặc nấp trong bụi.",
+  chain:"Cả nhóm phải đứng nối liền nhau, không đứt quãng.",
+  line:"Cả nhóm phải đứng thẳng một hàng liền nhau.",
+  queue:"Phải nối đuôi đúng THỨ TỰ đấy.",
+  notTer:"Nhìn màu ô đất — ô nâu sẫm là bùn."
+};
+
+function pickHintCon(){
+  const lv=L(), res=evalCons();
+  const list = lv.type==="matrix"?lv.clues : lv.type==="story"?lv.panels : lv.cons;
+  let i=res.indexOf(false); if(i<0) i=res.indexOf(null);
+  return i<0 ? null : {i, k:list[i]};
+}
+
+function giveHint(){
+  const lv=L(); hintCount++;
+  if(window.SFX) SFX.play("cham");
+  const pick=pickHintCon();
+  if(!pick){ $("nameplate").innerHTML="💡 Sắp xong rồi — xem còn ai chưa được đặt nào!"; return; }
+  hintTier=Math.min(hintTier+1,3);
+  const {i,k}=pick;
+  if(hintTier===1){
+    const txt=stripTags(k.txt||k.cue||k.label||"");
+    const strat = lv.type==="matrix" ? "Đọc kỹ manh mối này rồi nhìn lên bảng nhé."
+      : lv.type==="story" ? "Nhớ lại xem trong truyện lúc ấy chuyện gì xảy ra."
+      : (HINT_STRAT[k.t]||"");
+    $("nameplate").innerHTML=`💡 <b>${txt}</b> — ${strat}`;
+    speak(txt+". "+strat);
+  } else if(hintTier===2){
+    $("nameplate").innerHTML="💡 Nhìn những chỗ đang nháy kìa!";
+    highlightCons(i);
+  } else {
+    hintPoint(i,k);
+  }
+}
+
+/* Bậc 3 — chỉ thẳng chỗ cần điền */
+function hintPoint(i,k){
+  const lv=L();
+  const hand='<span class="tut-hand">👆</span>';
+  if(lv.type==="story"){
+    const slot=$("tray").querySelector(`.tray-slot[data-c="${k.answer}"]`);
+    const pf=document.querySelectorAll(".pf")[i];
+    if(slot) slot.insertAdjacentHTML("beforeend",hand);
+    flashEls([slot,pf]);
+    $("nameplate").innerHTML="💡 Mảnh này — đặt vào khung đang nháy!";
+    return;
+  }
+  if(lv.type==="matrix"){
+    const sol=solveMatrix();
+    if(!sol){ $("nameplate").innerHTML="💡 Thử bỏ hết dấu ✓ rồi làm lại từng manh mối."; return; }
+    const r=(k.c && mAssign[k.c]!==sol[k.c]) ? k.c : lv.rows.find(rr=>mAssign[rr]!==sol[rr]);
+    if(!r) return;
+    const cell=document.querySelector(`.mcell[data-r="${r}"][data-col="${sol[r]}"]`);
+    if(cell){ cell.insertAdjacentHTML("beforeend",hand); flashEls([cell]); }
+    $("nameplate").innerHTML=`💡 <b>${CHARS[r].name}</b> — chạm vào ô đang nháy!`;
+    return;
+  }
+  const sol=solveLevel();
+  if(!sol){ $("nameplate").innerHTML="💡 Thử Xếp lại rồi làm từng việc một nhé."; return; }
+  const wrong = c => !place[c] || place[c][0]!==sol[c][0] || place[c][1]!==sol[c][1];
+  const c=[k.c,k.target,...(k.cs||[])].filter(Boolean).find(wrong) || lv.chars.find(wrong);
+  if(!c) return;
+  const [x,y]=sol[c];
+  const cell=document.querySelector(`.cell[data-x="${x}"][data-y="${y}"]`);
+  if(cell){ cell.insertAdjacentHTML("beforeend",hand); flashEls([cell]); }
+  if(!place[c]) flashEls([$("tray").querySelector(`.tray-slot[data-c="${c}"]`)]);
+  $("nameplate").innerHTML=`💡 Đặt <b>${CHARS[c].name}</b> vào ô đang nháy!`;
+}
+
+/* Bộ giải màn xếp chỗ — backtracking, ưu tiên giữ các quân người chơi đã đặt
+   (để gợi ý không bắt dời quân đang đúng). Cũng là nền cho bộ sinh đề C1 sau này. */
+function solveLevel(){
+  const lv=L(); if(lv.type!=="place") return null;
+  const saved={...place};
+  const em=envCellMap();
+  const free=[];
+  for(let y=0;y<lv.rows;y++) for(let x=0;x<lv.cols;x++){
+    if(isBlocked(x,y)||extraAt(x,y)) continue;
+    free.push([x,y]);
+  }
+  for(const c of lv.chars) place[c]=null;
+  let sol=null;
+  const bad=()=>evalCons().some(r=>r===false);
+  function bt(i){
+    if(i===lv.chars.length){
+      if(evalCons().every(r=>r===true)){ sol={...place}; return true; }
+      return false;
+    }
+    const c=lv.chars[i];
+    const order = saved[c]
+      ? [saved[c], ...free.filter(p=>p[0]!==saved[c][0]||p[1]!==saved[c][1])]
+      : free;
+    for(const [x,y] of order){
+      if(charAt(x,y)) continue;
+      const e=em[key(x,y)];
+      if(e && !canOccupy(c,e)) continue;
+      place[c]=[x,y];
+      if(!bad() && bt(i+1)) return true;
+      place[c]=null;
+    }
+    return false;
+  }
+  bt(0);
+  for(const k2 in place) delete place[k2];
+  Object.assign(place,saved);
+  return sol;
+}
+
+/* Bộ giải ma trận — thử mọi cách gán, bảng nhỏ nên tức thời */
+function solveMatrix(){
+  const lv=L(); if(lv.type!=="matrix") return null;
+  const saved={...mAssign};
+  for(const r of lv.rows) mAssign[r]=null;
+  let sol=null;
+  function bt(i){
+    if(i===lv.rows.length){
+      if(evalCons().every(r=>r===true)){ sol={...mAssign}; return true; }
+      return false;
+    }
+    for(const col of lv.colsM){
+      mAssign[lv.rows[i]]=col;
+      if(!evalCons().some(r=>r===false) && bt(i+1)) return true;
+      mAssign[lv.rows[i]]=null;
+    }
+    return false;
+  }
+  bt(0);
+  for(const k2 in mAssign) delete mAssign[k2];
+  Object.assign(mAssign,saved);
+  return sol;
+}
+
 /* ===== Chạm chip → nháy các ô liên quan trên bàn ===== */
 function flashEls(els){
   els.filter(Boolean).forEach(el=>{

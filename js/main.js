@@ -35,6 +35,7 @@ function win(){
 
 function load(i){
   cur=i; place={}; held=null; mAssign={}; sAssign={};
+  hintTier=0; hintCount=0;          // thang gợi ý làm lại từ đầu mỗi màn
   const lv=LEVELS[i];
   if(lv.type==="place") for(const c of lv.chars) place[c]=null;
   else if(lv.type==="story") lv.panels.forEach((p,j)=>sAssign[j]=null);
@@ -44,6 +45,7 @@ function load(i){
 }
 
 $("reset").onclick=()=>load(cur);
+$("hintBtn").onclick=()=>giveHint();
 $("bagBtn").onclick=()=>{ renderBag(); $("bagVeil").classList.add("show"); };
 $("bagClose").onclick=()=>$("bagVeil").classList.remove("show");
 $("resetSave").onclick=()=>{

@@ -87,6 +87,21 @@ function hlVeVung(n, cot, coVung, R, choSan = 0){
   return { vung, chu };
 }
 
+/* Một tập ô có liền một mạch không */
+function hlLienThong(cells){
+  if(!cells.length) return false;
+  const s = new Set(cells.map(o => o.join(",")));
+  const q = [cells[0]], tham = new Set([cells[0].join(",")]);
+  while(q.length){
+    const [r,c] = q.pop();
+    for(const [dr,dc] of BON){
+      const t = (r+dr) + "," + (c+dc);
+      if(s.has(t) && !tham.has(t)){ tham.add(t); q.push([r+dr, c+dc]); }
+    }
+  }
+  return tham.size === cells.length;
+}
+
 /* ===== 3. Một vùng ÔM HẾT chỗ trống còn lại (sân hội mênh mông).
    Loang từ chính vùng đó nên chắc chắn vẫn liền mạch. Gọi SAU khi đã đặt mốc,
    để mốc không bị nuốt mất. ===== */
@@ -119,6 +134,28 @@ function hlDatMoc(n, cot, chu, soMoc, R){
     moc.push({ nguoi: v, o });
   }
   return moc;
+}
+
+/* ===== 4b. VẬT CẢN THUẦN — ao nước, tảng đá… nằm BÊN TRONG vùng.
+   Khác mốc ở chỗ: mốc thêm một manh mối phải đọc, vật cản chỉ lặng lẽ bớt chỗ đứng.
+   Với trẻ nhỏ đây là cần gạt quý nhất: giảm không gian mà không thêm chữ nào.
+   Ví dụ: thả cái ao vào giữa làng — hôm nay Thuỷ Tinh không dự hội thì nước chỉ là
+   vật cản; hôm nào có Thuỷ Tinh thì chính ô nước ấy lại là chỗ đứng của thần. */
+function hlDatVatCan(n, chu, vung, cot, so, R){
+  const vc = [];
+  const ungVien = hlShuffle(
+    [].concat(...vung.map((cells, v) => cells
+      .filter(([r,c]) => cot[r] !== c)              // chừa ô lời giải ra
+      .map(([r,c]) => [r,c,v]))), R);
+  for(const [r,c,v] of ungVien){
+    if(vc.length >= so) break;
+    if(vung[v].length <= 3) continue;               // giữ vùng đủ rộng, kẻo thoái hoá
+    const conLai = vung[v].filter(([a,b]) => !(a===r && b===c));
+    if(!hlLienThong(conLai)) continue;              // không được cắt đứt vùng
+    vung[v] = conLai; chu[r][c] = -3;               // -3 = vật cản
+    vc.push([r,c]);
+  }
+  return vc;
 }
 
 /* Ứng viên THẬT = ô trong vùng, lọc thêm theo mốc.
@@ -233,7 +270,7 @@ function hlGiaiKieuNguoi(n, ung0){
 }
 
 /* ===== 7. Dựng một đề thô từ hạt giống — dùng chung cho sinh và thống kê ===== */
-function hlDungDe(n, co, soMoc, choSan, omHet, R){
+function hlDungDe(n, co, soMoc, choSan, omHet, soVatCan, R){
   const cot = hlLoiGiai(n, R);
   if(!cot) return null;
   const coVung = hlShuffle(Array.from({length:n}, (_, i) => co[i % co.length]), R);
@@ -245,7 +282,9 @@ function hlDungDe(n, co, soMoc, choSan, omHet, R){
     const ungVienOm = [...Array(n).keys()].filter(v => vung[v].length > 1);
     if(ungVienOm.length){ vungOm = hlPick(ungVienOm, R); hlOmHet(n, chu, vung, vungOm); }
   }
-  return { cot, coVung, vung, chu, moc, vungOm };
+  /* vật cản khoét sau cùng, khi hình dạng vùng đã chốt */
+  const vatCan = soVatCan ? hlDatVatCan(n, chu, vung, cot, soVatCan, R) : [];
+  return { cot, coVung, vung, chu, moc, vungOm, vatCan };
 }
 
 /* ===== 8. ENGINE SINH ĐỀ ===== */
@@ -255,6 +294,7 @@ function sinhDe(opts = {}){
   const soMoc  = opts.soMoc  ?? 2;              // số cảnh vật làm mốc (0–3)
   const choSan = opts.choSan ?? 0;              // số người đứng sẵn
   const omHet  = opts.omHet  ?? false;          // một vùng ôm hết chỗ trống còn lại
+  const soVatCan = opts.soVatCan ?? 0;          // ao/đá khoét trong vùng — bớt chỗ, không thêm chữ
   const doKho  = opts.doKho  ?? null;           // "dễ" | "vừa" | "khó" | null
   const soLan  = opts.soLan  ?? 8000;
   const oItNhat    = opts.oItNhat ?? 3;         // cửa chặn thoái hoá
@@ -262,7 +302,7 @@ function sinhDe(opts = {}){
   const R = hlRng(opts.seed ?? (Date.now() & 0x7fffffff));
 
   for(let lan=0; lan<soLan; lan++){
-    const t = hlDungDe(n, co, soMoc, choSan, omHet, R);
+    const t = hlDungDe(n, co, soMoc, choSan, omHet, soVatCan, R);
     if(!t) continue;
     const ung = hlUngVien(t.vung, t.moc);
 
@@ -275,6 +315,7 @@ function sinhDe(opts = {}){
 
     return {
       n, co: t.coVung, soMoc: t.moc.length, choSan, vungOm: t.vungOm,
+      vatCan: t.vatCan, soVatCan: t.vatCan.length,
       seed: opts.seed ?? null, soLanThu: lan + 1,
       loiGiai: t.cot.map((c,r) => [r,c]),
       vung: t.vung, chu: t.chu, moc: t.moc,
@@ -345,7 +386,7 @@ function hlThongKe(opts = {}){
   let duyNhat = 0, dungChuan = 0, tong = 0, tongKG = 0, tongOm = 0;
   const kho = { dễ:0, vừa:0, khó:0 };
   for(let i=0; i<soLan; i++){
-    const t = hlDungDe(n, co, opts.soMoc ?? 0, opts.choSan ?? 0, opts.omHet ?? false, R);
+    const t = hlDungDe(n, co, opts.soMoc ?? 0, opts.choSan ?? 0, opts.omHet ?? false, opts.soVatCan ?? 0, R);
     if(!t) continue;
     tong++;
     const ung = hlUngVien(t.vung, t.moc);
