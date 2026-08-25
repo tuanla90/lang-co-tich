@@ -22,6 +22,8 @@ const chShort = name => name.split("·")[0].trim().toLowerCase();
 function win(){
   if($("veil").classList.contains("show")) return;
   if(!done.includes(cur)) done.push(cur);
+  saveProgress();
+  if(window.SFX) SFX.play("dung");
   const nxt = LEVELS[cur+1];
   const endOfChapter = !nxt || nxt._ch !== L()._ch;
   $("winTitle").textContent = endOfChapter ? `Hết ${chShort(L()._ch)}!` : "Giỏi quá!";
@@ -38,12 +40,26 @@ function load(i){
   else if(lv.type==="story") lv.panels.forEach((p,j)=>sAssign[j]=null);
   else for(const r of lv.rows) mAssign[r]=null;
   $("veil").classList.remove("show"); render();
+  saveProgress();
 }
 
 $("reset").onclick=()=>load(cur);
 $("bagBtn").onclick=()=>{ renderBag(); $("bagVeil").classList.add("show"); };
 $("bagClose").onclick=()=>$("bagVeil").classList.remove("show");
+$("resetSave").onclick=()=>{
+  if(!confirm("Chơi lại từ đầu? (Túi đồ vẫn giữ nguyên)")) return;
+  try{ localStorage.removeItem("lct_save"); }catch(e){}
+  done=[]; $("bagVeil").classList.remove("show"); load(0);
+};
 $("againBtn").onclick=()=>load(cur);
 $("nextBtn").onclick=()=>load(cur+1);
+function sndIcon(){ $("sndBtn").textContent = SFX.on ? "🔉" : "🔇"; }
+$("sndBtn").onclick=()=>{ SFX.toggle(); if(SFX.on) SFX.play("cham"); sndIcon(); };
+sndIcon();
+
+$("sayWin").onclick=()=>speak(stripTags($("winStory").innerHTML));
+if(!window.speechSynthesis) $("sayWin").style.display="none";
+
 window.addEventListener("resize",render);
-load(0);
+loadProgress();   // mở lại đúng màn đang dở, giữ các màn đã xong
+load(cur);

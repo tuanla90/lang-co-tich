@@ -213,3 +213,36 @@ h1 .tilde{color:var(--la)}
 .bag-item.unknown{opacity:.65}
 .bag-item .qmark{width:52px;height:52px;display:grid;place-items:center;
   font-size:34px;font-weight:800;color:#B8A97E;font-family:"Baloo 2",sans-serif}
+
+/* ===== Bộ chọn chương ===== */
+.chsel{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
+.ch-card{display:flex;flex-direction:column;align-items:center;gap:1px;width:80px;padding:6px 2px;
+  background:var(--diep-sang);border:var(--vien);border-radius:12px;cursor:pointer;
+  font-family:"Be Vietnam Pro",sans-serif}
+.ch-card b{font-size:10.5px;font-weight:600;line-height:1.1;text-align:center}
+.ch-prog{font-size:10px;color:#6B5232}
+.ch-ic svg{width:34px;height:34px}
+.ch-lock{font-size:22px;line-height:34px;display:block}
+.ch-card.cur{border-color:var(--son);background:#F3D9A8}
+.ch-card.full .ch-prog{color:var(--ok);font-weight:700}
+.ch-card.locked{opacity:.45;cursor:default}
+.ch-card:focus-visible{outline:3px solid var(--cham)}
+.dots-inner{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+
+/* ===== Chip bấm được → nháy ô liên quan ===== */
+.chip{cursor:pointer}
+.flash{animation:flashHi .45s ease-in-out 3}
+@keyframes flashHi{50%{outline:4px solid var(--son);outline-offset:2px}}
+@media (prefers-reduced-motion:reduce){.flash{animation:none;outline:4px solid var(--son)}}
+
+/* ===== Nút đọc to ===== */
+.say{border:none;background:none;cursor:pointer;font-size:16px;padding:0 3px;vertical-align:middle}
+.say-win{font-size:13.5px;font-family:"Be Vietnam Pro",sans-serif;color:#6B5232;
+  border:1.5px dashed var(--muc);border-radius:999px;padding:3px 12px;margin-bottom:10px}
+
+/* ===== Từ chỉ đối tượng trong chip: chữ + mini icon, chạm được ===== */
+.ref{font-weight:700;color:var(--cham);cursor:pointer;white-space:nowrap;
+  border-bottom:2px dotted var(--cham);border-radius:2px}
+.ref:hover{color:var(--son);border-bottom-color:var(--son)}
+.ref .ref-ic{display:inline-block;width:19px;height:19px;vertical-align:-4px;margin-left:1px}
+.ref .ref-ic svg{width:19px;height:19px;display:block}

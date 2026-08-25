@@ -35,6 +35,26 @@ function collectRelic(id){
   try{ localStorage.setItem("lct_relics", JSON.stringify(relicsGot)); }catch(e){}
 }
 
+/* Tiến trình chơi: lưu theo ID MÀN ổn định (không lưu chỉ số) —
+   chèn/xoá/đổi chỗ màn về sau không làm hỏng save của người chơi. */
+function saveProgress(){
+  try{
+    localStorage.setItem("lct_save", JSON.stringify({
+      done: done.map(i => LEVELS[i] && LEVELS[i].id).filter(Boolean),
+      cur:  LEVELS[cur] ? LEVELS[cur].id : null,
+    }));
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const s = JSON.parse(localStorage.getItem("lct_save") || "null");
+    if(!s) return;
+    done = (s.done || []).map(id => LEVELS.findIndex(l => l.id === id)).filter(i => i >= 0);
+    const ci = LEVELS.findIndex(l => l.id === s.cur);
+    if(ci >= 0) cur = ci;
+  }catch(e){}
+}
+
 /* Tường/rào: chặn CẠNH giữa 2 ô, không choán ô. walls: [[x,y,"r"|"b"],...] (mép phải/mép dưới của ô x,y) */
 function wallsOf(){ return L().walls||[]; }
 function wallBetween(ax,ay,bx,by){
