@@ -29,7 +29,7 @@ CHAPTERS.push({
 
   {type:"place", name:"Ao sâu cá mè", cols:4, rows:4,
    scene:"<i>“Phú ông xin đổi ao sâu cá mè!”</i> — Phú ông <b>thả con cá mè</b> xuống ao cho Bờm xem, rồi đứng bên mép nước gạ tiếp. Bờm thì đứng xa xa, bịt mũi…",
-   env:[{id:"ao",cells:[[0,2],[0,3]]},{id:"tre",cells:[[3,0]]},{id:"nui",cells:[[3,3]]}], blocked:[], mud:[],
+   env:[{id:"ao",cells:[[0,2],[0,3]]},{id:"tre",cells:[[3,0]]},{id:"nui",cells:[[3,3]]},{id:"cayda",cells:[[0,0]]},{id:"tangda",cells:[[2,3]]}], blocked:[], mud:[],
    chars:["bom","phuong","came"],
    cons:[{t:"onEnv",c:"came",e:"ao",txt:"Thả cá mè xuống ao"},
          {t:"adjEnv",c:"phuong",e:"ao",txt:"Phú ông đứng bên mép ao"},
@@ -57,7 +57,7 @@ CHAPTERS.push({
 
   {type:"place", name:"Con chim đồi mồi", cols:4, rows:3,
    scene:"<i>“Phú ông xin đổi con chim đồi mồi!”</i> — Phú ông thả con chim quý <b>đậu lên cây đa</b> cho Bờm xem, đứng dưới gốc mà gạ. Bờm né xa cái cây…",
-   env:[{id:"cayda",cells:[[2,0],[3,0]]},{id:"tre",cells:[[0,2]]}], blocked:[], mud:[],
+   env:[{id:"cayda",cells:[[2,0],[3,0]]},{id:"tre",cells:[[0,2]]},{id:"tangda",cells:[[0,0]]}], blocked:[], mud:[],
    chars:["bom","phuong","chimdm"],
    cons:[{t:"onEnv",c:"chimdm",e:"cayda",txt:"Chim đồi mồi đậu trên cây đa"},
          {t:"adjEnv",c:"phuong",e:"cayda",txt:"Phú ông đứng dưới gốc khoe chim"},

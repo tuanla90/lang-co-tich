@@ -41,7 +41,8 @@ CHAPTERS.push({
    relic:{id:"dot100",cell:[2,3]},
    chars:["dot1","dot2","dot3","khoai"],
    cons:[{t:"line",cs:["dot1","dot2","dot3"],txt:"Khắc nhập! Ba đốt tre phải nằm THẲNG một hàng"},
-         {t:"adjChar",c:"khoai",target:"dot1",txt:"Khoai đứng bên đọc thần chú"}],
+         {t:"adjChar",c:"khoai",target:"dot1",txt:"Khoai đứng bên đọc thần chú"},
+         {t:"adjEnv",c:"khoai",e:"tre",txt:"Khoai đứng nép bên bụi tre"}],
    story:"Vèo! Các đốt tre nhập thành một cây tre dài <b>đúng trăm đốt</b>. “<b>Khắc xuất!</b>” — cây lại rời ra từng khúc, Khoai bó lại, gánh về làng…"},
 
   {type:"place", name:"Đám cỗ lật kèo", cols:5, rows:3,

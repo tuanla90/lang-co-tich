@@ -178,9 +178,13 @@ const HINT_STRAT={
   notTer:"Nhìn màu ô đất — ô nâu sẫm là bùn."
 };
 
+function hintList(lv){
+  return lv.type==="matrix"?lv.clues : lv.type==="story"?lv.panels
+       : lv.type==="hoilang"?hlLuat(lv) : lv.cons;
+}
 function pickHintCon(){
   const lv=L(), res=evalCons();
-  const list = lv.type==="matrix"?lv.clues : lv.type==="story"?lv.panels : lv.cons;
+  const list = hintList(lv);
   let i=res.indexOf(false); if(i<0) i=res.indexOf(null);
   return i<0 ? null : {i, k:list[i]};
 }
@@ -197,6 +201,7 @@ function giveHint(){
     const txt=stripTags(k.txt||k.cue||k.label||"");
     const strat = lv.type==="matrix" ? "Đọc kỹ manh mối này rồi nhìn lên bảng nhé."
       : lv.type==="story" ? "Nhớ lại xem trong truyện lúc ấy chuyện gì xảy ra."
+      : lv.type==="hoilang" ? "Ai đứng vùng màu nấy — tìm người còn ÍT chỗ đứng nhất mà đặt trước."
       : (HINT_STRAT[k.t]||"");
     $("nameplate").innerHTML=`💡 <b>${txt}</b> — ${strat}`;
     speak(txt+". "+strat);
@@ -212,6 +217,19 @@ function giveHint(){
 function hintPoint(i,k){
   const lv=L();
   const hand='<span class="tut-hand">👆</span>';
+  if(lv.type==="hoilang"){
+    /* đề sinh máy luôn kèm lời giải — chỉ người đầu tiên đang lệch chỗ */
+    const wrong=c=>{ const p=place[c], s=lv.loiGiai[c];
+      return !p || p[0]!==s[0] || p[1]!==s[1]; };
+    const c=lv.chars.find(wrong);
+    if(!c) return;
+    const [x,y]=lv.loiGiai[c];
+    const cell=document.querySelector(`.cell[data-x="${x}"][data-y="${y}"]`);
+    if(cell){ cell.insertAdjacentHTML("beforeend",hand); flashEls([cell]); }
+    if(!place[c]) flashEls([$("tray").querySelector(`.tray-slot[data-c="${c}"]`)]);
+    $("nameplate").innerHTML=`💡 Đặt <b>${CHARS[c].name}</b> vào ô đang nháy!`;
+    return;
+  }
   if(lv.type==="story"){
     const slot=$("tray").querySelector(`.tray-slot[data-c="${k.answer}"]`);
     const pf=document.querySelectorAll(".pf")[i];
@@ -317,6 +335,17 @@ function highlightCons(i){
   const lv=L(); if(window.SFX) SFX.play("cham");
   const els=[];
   const cellEl=(x,y)=>document.querySelector(`.cell[data-x="${x}"][data-y="${y}"]`);
+  if(lv.type==="hoilang"){
+    if(i>=4){                                   // chip mốc: nháy mốc + người phải kề
+      const m=lv.moc[i-4];
+      if(m){ els.push(cellEl(m.o[0],m.o[1]));
+        const p=place[m.c];
+        els.push(p?cellEl(p[0],p[1]):$("tray").querySelector(`.tray-slot[data-c="${m.c}"]`)); }
+    } else {                                    // luật chung: nháy những người đã đặt
+      for(const c of lv.chars){ const p=place[c]; if(p) els.push(cellEl(p[0],p[1])); }
+    }
+    flashEls(els); return;
+  }
   if(lv.type==="story"){
     const pf=document.querySelectorAll(".pf")[i]; if(pf) els.push(pf);
   } else if(lv.type==="matrix"){
