@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Làng Cổ Tích</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <div class="eyebrow" id="chapterName">Chương 1 · Tấm Cám</div>
+  <h1>Làng <span class="tilde">Cổ Tích</span></h1>
+  <div class="dots" id="dots"></div>
+</header>
+
+<div class="game">
+  <aside class="panel">
+    <div class="scene" id="scene"></div>
+    <div class="chips" id="chips"></div>
+    <div class="bar"><button class="btn" id="reset">Xếp lại</button></div>
+  </aside>
+  <section class="stage">
+    <div class="stage-inner" id="stagebox"></div>
+    <div class="nameplate" id="nameplate"></div>
+    <div class="tray" id="tray"></div>
+  </section>
+</div>
+
+<div class="veil" id="veil">
+  <div class="win">
+    <h2 id="winTitle">Giỏi quá!</h2>
+    <p id="winStory"></p>
+    <button class="btn" id="againBtn">Chơi lại màn</button>
+    <button class="btn primary" id="nextBtn">Màn tiếp theo</button>
+  </div>
+</div>
+
+<!-- Script thường (không dùng ES module) để mở trực tiếp bằng file:// vẫn chạy -->
+<script src="js/art.js"></script>
+<script src="js/chapters/chapter1.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

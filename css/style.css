@@ -1,0 +1,145 @@
+/* ===== Bảng màu tranh dân gian — một thế giới duy nhất, nền sơn rõ ===== */
+:root{
+  --diep:#EFDFB4; --diep-sang:#F7ECCB;
+  --muc:#3B2B1E; --son:#C8452A; --cham:#2E4A62;
+  --la:#5A7D3C; --la-nhat:#C9D6A3; --hoe:#E3A72F; --nuoc:#7FB3C8;
+  --bun:#A98055; --ok:#3E7C3A; --bad:#B23A2C;
+  --vien:2.5px solid var(--muc);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--diep); color:var(--muc);
+  font-family:"Be Vietnam Pro",system-ui,sans-serif;
+  display:flex;flex-direction:column;align-items:center;
+  padding:10px 12px 24px; -webkit-tap-highlight-color:transparent;
+}
+h1,h2,.btn,.lv-name{font-family:"Baloo 2","Be Vietnam Pro",sans-serif}
+
+header{width:100%;max-width:1100px;text-align:center;margin-bottom:6px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--son);font-weight:600}
+h1{font-size:clamp(22px,4vw,30px);font-weight:800;line-height:1.1}
+h1 .tilde{color:var(--la)}
+.dots{display:flex;gap:8px;justify-content:center;margin:8px 0 4px;flex-wrap:wrap}
+.dot{width:14px;height:14px;border-radius:50%;border:var(--vien);background:var(--diep-sang);cursor:pointer;padding:0}
+.dot.mtx{border-radius:4px}          /* màn ma trận: chấm vuông */
+.dot.done{background:var(--la)}
+.dot.cur{background:var(--son)}
+.dot:focus-visible{outline:3px solid var(--cham);outline-offset:2px}
+
+/* ===== Bố cục: dọc mặc định, ngang 2 cột từ 880px ===== */
+.game{width:100%;max-width:1100px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.panel,.stage{display:contents}
+#scene{order:1} #stagebox{order:2} #nameplate{order:3} #tray{order:4} #chips{order:5} .bar{order:6}
+
+@media (min-width:880px){
+  .game{display:grid;grid-template-columns:minmax(300px,360px) 1fr;gap:16px;align-items:start}
+  .panel{display:flex;flex-direction:column;gap:12px;position:sticky;top:8px;
+    max-height:calc(100vh - 30px);overflow-y:auto;padding-right:2px}
+  .stage{display:flex;flex-direction:column;align-items:center;gap:12px}
+}
+
+.scene{
+  width:100%;background:var(--diep-sang);border:var(--vien);border-radius:14px;
+  padding:10px 14px;font-size:14.5px;line-height:1.5;
+}
+.scene .lv-name{color:var(--son);font-weight:700;font-size:16px;margin-right:6px}
+
+/* ===== Bàn cờ ===== */
+.stage-inner{max-width:100%;overflow-x:auto;padding:4px;display:flex;justify-content:center}
+.nameplate{min-height:24px;width:100%;max-width:640px;text-align:center;
+  font-size:13.5px;font-style:italic;color:#6B5232}
+.nameplate b{font-style:normal;color:var(--muc)}
+.board{
+  display:grid;gap:5px;background:var(--muc);
+  border:3px solid var(--muc);border-radius:12px;padding:5px;touch-action:manipulation;
+}
+.cell{
+  width:var(--cw);height:var(--cw);border-radius:8px;position:relative;
+  background:linear-gradient(160deg,#DDE6B8,#CBD9A0);border:none;cursor:pointer;padding:0;
+}
+.cell:nth-child(odd){background:linear-gradient(160deg,#E4EBC2,#D2DEAB)}
+.cell.env{cursor:default}
+.cell.env.sel-target{cursor:pointer}   /* ô môi trường trèo được */
+.cell.water{background:linear-gradient(160deg,#9CC6D6,var(--nuoc))}
+.cell.mud{background:linear-gradient(160deg,#C09A6C,var(--bun))}
+.cell.rocked{cursor:default}
+.cell.sel-target:hover::after,.cell.sel-target:focus-visible::after{
+  content:"";position:absolute;inset:3px;border:3px dashed var(--son);border-radius:6px;
+}
+.cell:focus-visible{outline:3px solid var(--cham);outline-offset:1px}
+.cell.behind-hint::before{
+  content:"";position:absolute;inset:3px;border:3px dashed var(--cham);border-radius:6px;opacity:.75;
+}
+.cell > svg{position:absolute;inset:0;width:100%;height:100%}
+.tok{position:absolute;inset:4%;transition:transform .15s}
+.tok svg{width:100%;height:100%}
+.tok.held{transform:scale(1.12);filter:drop-shadow(0 4px 5px rgba(59,43,30,.45))}
+.tok.hiding{opacity:.55}               /* đang nấp: thấy thấp thoáng sau tán lá */
+.face-arrow{position:absolute;width:0;height:0;border:7px solid transparent}
+/* Tường/rào: nằm ở KHE giữa 2 ô, không choán ô */
+.wall{position:absolute;background:#8A6E52;border:2px solid var(--muc);border-radius:3px;z-index:2;pointer-events:none}
+.wall-r{right:-7px;top:5%;width:8px;height:90%}
+.wall-b{bottom:-7px;left:5%;height:8px;width:90%}
+
+/* ===== Ma trận ===== */
+.mgrid{display:grid;gap:5px;background:var(--muc);border:3px solid var(--muc);
+  border-radius:12px;padding:6px;touch-action:manipulation}
+.mhead,.mrowhead{background:var(--diep-sang);border-radius:8px;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px 3px}
+.mhead svg{width:42px;height:42px}
+.mrowhead svg{width:44px;height:44px}
+.mhead b,.mrowhead b{font-size:12px;font-weight:600;text-align:center;line-height:1.15}
+.mter{font-size:10.5px;color:#7A5A2E;background:#E9D9A8;border:1.5px solid var(--bun);
+  border-radius:999px;padding:1px 7px;font-weight:600}
+.mcell{background:linear-gradient(160deg,#E4EBC2,#D2DEAB);border:none;border-radius:8px;
+  cursor:pointer;display:grid;place-items:center;min-height:52px;position:relative}
+.mcell:focus-visible{outline:3px solid var(--cham);outline-offset:1px}
+.mcell .tick{width:30px;height:30px;border-radius:50%;background:var(--ok);
+  border:2.5px solid var(--muc);color:#fff;display:grid;place-items:center;
+  font-weight:800;font-size:18px}
+.mcell .no{font-size:20px;color:rgba(59,43,30,.34);font-weight:700}
+.mcorner{background:transparent}
+
+/* ===== Khay nhân vật ===== */
+.tray{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+  min-height:76px;width:100%;max-width:640px;
+  background:var(--diep-sang);border:var(--vien);border-radius:14px;padding:10px}
+.tray-slot{width:60px;height:74px;display:flex;flex-direction:column;align-items:center;gap:2px;
+  border:none;background:none;cursor:pointer;border-radius:10px;padding:2px}
+.tray-slot:focus-visible{outline:3px solid var(--cham)}
+.tray-slot.held{background:rgba(200,69,42,.15);outline:3px solid var(--son)}
+.tray-slot.placed{opacity:.28;cursor:default}
+.tray-slot svg{width:50px;height:50px}
+.tray-slot span{font-size:11.5px;font-weight:600}
+
+/* ===== Chip ràng buộc / manh mối ===== */
+.chips{display:flex;flex-direction:column;gap:7px;width:100%}
+.chips h3{font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--cham);
+  font-weight:600;margin:2px 0 0 6px}
+.chip{display:flex;align-items:center;gap:9px;background:var(--diep-sang);
+  border:var(--vien);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:500}
+.chip .mark{width:22px;height:22px;border-radius:50%;flex:none;display:grid;place-items:center;
+  border:2px solid var(--muc);background:#fff;font-weight:800;font-size:13px;color:#fff}
+.chip.ok{border-color:var(--ok)}
+.chip.ok .mark{background:var(--ok);border-color:var(--ok)}
+.chip.ok .mark::after{content:"✓"}
+.chip.bad{border-color:var(--bad)}
+.chip.bad .mark{background:var(--bad);border-color:var(--bad)}
+.chip.bad .mark::after{content:"!"}
+
+.bar{display:flex;gap:10px}
+.btn{border:var(--vien);border-radius:999px;background:var(--diep-sang);color:var(--muc);
+  font-size:15px;font-weight:700;padding:9px 20px;cursor:pointer}
+.btn.primary{background:var(--son);color:#FFF4E0;border-color:var(--son)}
+.btn:focus-visible{outline:3px solid var(--cham);outline-offset:2px}
+
+.veil{position:fixed;inset:0;background:rgba(59,43,30,.55);display:none;place-items:center;padding:20px;z-index:10}
+.veil.show{display:grid}
+.win{background:var(--diep-sang);border:3px solid var(--muc);border-radius:18px;
+  max-width:420px;width:100%;padding:26px 22px;text-align:center}
+.win h2{font-size:24px;color:var(--son);margin-bottom:10px}
+.win p{font-size:15.5px;line-height:1.55;margin-bottom:18px}
+.win .btn{margin:0 4px}
+
+@media (prefers-reduced-motion:reduce){.tok{transition:none}}

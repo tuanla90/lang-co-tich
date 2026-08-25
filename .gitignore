@@ -1,0 +1,12 @@
+# Rác hệ điều hành
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Trình soạn thảo
+.vscode/
+.idea/
+*.swp
+
+# Nếu sau này có build/asset sinh ra tự động thì thêm vào đây
+node_modules/
