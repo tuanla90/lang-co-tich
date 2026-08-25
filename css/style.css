@@ -143,3 +143,73 @@ h1 .tilde{color:var(--la)}
 .win .btn{margin:0 4px}
 
 @media (prefers-reduced-motion:reduce){.tok{transition:none}}
+
+/* ===== Màn kể chuyện: dải khung tranh ===== */
+.dot.sty{border-radius:4px;transform:rotate(45deg)}   /* màn kể chuyện: chấm hình thoi */
+.storywrap{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
+.strip{display:grid;gap:10px;width:100%;max-width:720px;
+  grid-template-columns:repeat(auto-fit,minmax(152px,1fr))}
+.pf{background:var(--diep-sang);border:var(--vien);border-radius:14px;
+  padding:9px 9px 10px;display:flex;flex-direction:column;gap:6px;position:relative}
+.pf-num{position:absolute;top:-10px;left:10px;width:22px;height:22px;border-radius:50%;
+  background:var(--muc);color:var(--diep-sang);display:grid;place-items:center;
+  font-size:12px;font-weight:800}
+.pf-stage{display:flex;align-items:center;justify-content:center;gap:4px;min-height:82px;
+  background:linear-gradient(160deg,#E4EBC2,#D2DEAB);border-radius:10px;padding:6px}
+.pf-who{display:flex}
+.pf-who-tok{width:38px;height:38px}
+.pf-who-tok svg{width:100%;height:100%}
+.pf-slot{width:64px;height:64px;flex:none;padding:3px;cursor:pointer;border-radius:10px;
+  border:3px dashed rgba(59,43,30,.35);background:rgba(255,255,255,.4)}
+.pf-slot:focus-visible{outline:3px solid var(--cham);outline-offset:2px}
+.pf-piece,.pf-piece svg{width:100%;height:100%}
+.pf.sel-target .pf-slot{border-color:var(--son);background:rgba(200,69,42,.12)}
+.pf.ok{border-color:var(--ok)}
+.pf.ok .pf-slot{border-style:solid;border-color:var(--ok);background:rgba(62,124,58,.10)}
+.pf.bad{border-color:var(--bad)}
+.pf.bad .pf-slot{border-style:solid;border-color:var(--bad);background:rgba(178,58,44,.10)}
+.pf-cue{font-size:12.5px;line-height:1.4}
+.pf-after{font-size:12px;line-height:1.35;font-style:italic;color:#6B5232}
+
+/* Cú lộ: bốn kiếp lần lượt sáng lên, rồi Tấm hiện ra */
+.reveal{display:flex;align-items:center;justify-content:center;gap:10px;
+  background:var(--diep-sang);border:var(--vien);border-radius:999px;padding:8px 22px 8px 10px;
+  opacity:0;transform:translateY(8px);transition:opacity .6s ease,transform .6s ease}
+.reveal b{font-family:"Baloo 2","Be Vietnam Pro",sans-serif;font-size:19px;color:var(--son)}
+.reveal-art{width:44px;height:44px}
+.reveal-art svg{width:100%;height:100%}
+.storywrap.revealed .reveal{opacity:1;transform:none;transition-delay:1.15s}
+.storywrap.revealed .pf-slot{animation:glow .9s ease forwards}
+.storywrap.revealed .pf:nth-child(1) .pf-slot{animation-delay:.05s}
+.storywrap.revealed .pf:nth-child(2) .pf-slot{animation-delay:.30s}
+.storywrap.revealed .pf:nth-child(3) .pf-slot{animation-delay:.55s}
+.storywrap.revealed .pf:nth-child(4) .pf-slot{animation-delay:.80s}
+@keyframes glow{
+  0%  {box-shadow:0 0 0 0 rgba(227,167,47,.95)}
+  60% {box-shadow:0 0 0 13px rgba(227,167,47,0)}
+  100%{box-shadow:0 0 0 0 rgba(227,167,47,0);border-color:var(--hoe)}
+}
+@media (prefers-reduced-motion:reduce){
+  .reveal{transition:none}
+  .storywrap.revealed .pf-slot{animation:none;border-color:var(--hoe)}
+}
+
+/* ===== Di vật ẩn: ánh lấp lánh + Túi đồ ===== */
+.glint{position:absolute;right:4px;top:2px;font-size:15px;color:#E3A72F;
+  pointer-events:none;animation:glint 1.6s ease-in-out infinite;
+  text-shadow:0 0 4px #FFF4C0}
+@keyframes glint{0%,100%{opacity:.25;transform:scale(.8) rotate(-10deg)}
+  50%{opacity:1;transform:scale(1.15) rotate(10deg)}}
+@media (prefers-reduced-motion:reduce){.glint{animation:none;opacity:.9}}
+
+.win.bag{max-width:560px}
+.bag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:10px;margin-bottom:16px;max-height:55vh;overflow-y:auto}
+.bag-item{background:#EFE3BE;border:2.5px solid var(--muc);border-radius:12px;
+  padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center}
+.bag-item svg{width:52px;height:52px}
+.bag-item b{font-size:13.5px}
+.bag-item span{font-size:11.5px;font-style:italic;color:#6B5232;line-height:1.3}
+.bag-item.unknown{opacity:.65}
+.bag-item .qmark{width:52px;height:52px;display:grid;place-items:center;
+  font-size:34px;font-weight:800;color:#B8A97E;font-family:"Baloo 2",sans-serif}
