@@ -63,3 +63,18 @@ if(!window.speechSynthesis) $("sayWin").style.display="none";
 window.addEventListener("resize",render);
 loadProgress();   // mở lại đúng màn đang dở, giữ các màn đã xong
 load(cur);
+
+/* ===== A1: màn hình mở đầu ===== */
+$("tParade").innerHTML = ["tam","bom","giongts","cuoi"].map(c=>CHARS[c].svg).join("");
+const hasSave = done.length>0 || cur>0;
+$("startBtn").textContent = hasSave ? `Chơi tiếp — Màn ${cur+1}` : "Bắt đầu chơi";
+if(hasSave) $("startOver").style.display="";
+$("startBtn").onclick = ()=>{           // cú chạm đầu tiên cũng "mở khoá" autoplay âm thanh
+  $("titleVeil").classList.remove("show");
+  if(window.SFX) SFX.play("pop");
+};
+$("startOver").onclick = ()=>{
+  if(!confirm("Chơi lại từ đầu? (Túi đồ vẫn giữ nguyên)")) return;
+  try{ localStorage.removeItem("lct_save"); }catch(e){}
+  done=[]; $("titleVeil").classList.remove("show"); load(0);
+};

@@ -242,6 +242,28 @@ function renderBoard(lv){
     const c=s.dataset.c; if(place[c]) return;
     held = held===c ? null : c; render();
   });
+
+  /* A2: bàn tay hướng dẫn — chỉ ở màn 1 khi chưa có save nào */
+  if(cur===0 && done.length===0){
+    const hand=`<span class="tut-hand">👆</span>`;
+    const anyPlaced=lv.chars.some(c=>place[c]);
+    if(!held && !anyPlaced){
+      const s=$("tray").querySelector(`.tray-slot[data-c="${lv.chars[0]}"]`);
+      if(s) s.insertAdjacentHTML("beforeend",hand);
+    } else if(held){
+      const k=lv.cons.find(v=>v.t==="adjEnv"&&v.c===held);
+      const env=k && lv.env.find(v=>v.id===k.e);
+      if(env){ const em2=envCellMap();
+        outer: for(const ec of env.cells)
+          for(const d of NB){ const x=ec[0]+d[0], y=ec[1]+d[1];
+            if(x<0||y<0||x>=lv.cols||y>=lv.rows) continue;
+            if(em2[key(x,y)]||isBlocked(x,y)||charAt(x,y)) continue;
+            const cell=document.querySelector(`.cell[data-x="${x}"][data-y="${y}"]`);
+            if(cell){ cell.insertAdjacentHTML("beforeend",hand); break outer; }
+          }
+      }
+    }
+  }
 }
 
 function renderMatrix(lv){

@@ -5,18 +5,22 @@
    Luật chơi (đã chốt):
      · Mỗi hàng đúng một người, mỗi cột đúng một người   (quân xe)
      · Không ai đứng sát ai, kể cả góc chéo              (ai cũng cần khoảng trống)
-     · Mỗi người chỉ được đứng trong VÙNG của mình       (làng Tấm, núi Tản Viên…)
+     · Mỗi người chỉ đứng trong VÙNG của mình            (làng Tấm, núi Tản Viên…)
+     · MỐC: vài cảnh vật (cây đa, cây cau…) mà một người phải đứng KỀ bên
 
    Hai engine:
      sinhDe(opts)   → đẻ ra một đề đạt chuẩn, hoặc null nếu hết lượt thử
-     kiemDe(de)     → soi một đề: mấy nghiệm, có giải được bằng suy luận không, khó cỡ nào
+     kiemDe(de)     → soi một đề bất kỳ, kể cả đề vẽ tay
 
-   Chuẩn nhận đề: ĐÚNG 1 lời giải  VÀ  giải trọn bằng suy diễn cưỡng bức
-   (không được có bước nào phải đoán rồi quay lui).
+   Chuẩn nhận đề — cả bốn đều phải đạt:
+     1. ĐÚNG 1 lời giải
+     2. Giải trọn bằng suy diễn cưỡng bức, không bước nào phải đoán
+     3. Không thoái hoá: người phải tìm nào cũng còn ≥3 ô, cả bàn ≥60 tổ hợp
+     4. Vùng liền mạch, không chồng nhau, mốc không đè lên vùng
    ============================================================ */
 
-/* ===== Bộ số ngẫu nhiên CÓ HẠT GIỐNG — cùng seed thì cùng đề, để còn tái hiện
-   khi gỡ lỗi và để làm "câu đố mỗi ngày" (seed = số của ngày hôm đó). ===== */
+/* ===== Bộ số ngẫu nhiên CÓ HẠT GIỐNG — cùng seed thì cùng đề, để tái hiện khi
+   gỡ lỗi và để làm "câu đố mỗi ngày" (lấy số của ngày làm seed). ===== */
 function hlRng(seed){
   let a = seed >>> 0;
   return () => {
@@ -31,7 +35,9 @@ function hlShuffle(arr, R){
   for(let i=arr.length-1;i>0;i--){ const j=Math.floor(R()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
   return arr;
 }
-const KE8 = (a,b,c,d) => Math.abs(a-c)<=1 && Math.abs(b-d)<=1;   // sát nhau kể cả chéo
+const KE8 = (a,b,c,d) => Math.abs(a-c)<=1 && Math.abs(b-d)<=1;    // sát nhau, kể cả chéo
+const KE4 = (a,b,c,d) => Math.abs(a-c) + Math.abs(b-d) === 1;     // kề cạnh — dùng cho mốc
+const BON = [[1,0],[-1,0],[0,1],[0,-1]];
 
 /* ===== 1. Lời giải: hoán vị cột, hai hàng liền nhau phải lệch cột ≥ 2 ===== */
 function hlLoiGiai(n, R){
@@ -40,7 +46,7 @@ function hlLoiGiai(n, R){
     if(r === n) return true;
     for(const c of hlShuffle([...Array(n).keys()], R)){
       if(cot.includes(c)) continue;
-      if(r > 0 && Math.abs(c - cot[r-1]) <= 1) continue;   // hàng kề thì cột phải cách ≥2
+      if(r > 0 && Math.abs(c - cot[r-1]) <= 1) continue;
       cot.push(c);
       if(rec(r+1)) return true;
       cot.pop();
@@ -50,42 +56,88 @@ function hlLoiGiai(n, R){
   return rec(0) ? cot : null;      // cot[hàng] = cột
 }
 
-/* ===== 2. Vẽ vùng: mỗi người một vùng liên thông cỡ k ô, CÁC VÙNG RỜI NHAU =====
-   Mọc luân phiên từng vùng một để chúng nở đều, không vùng nào nuốt hết chỗ. */
-function hlVeVung(n, cot, k, R, choSan = 0){
-  const chu = Array.from({length:n}, () => Array(n).fill(-1));   // ô này thuộc vùng nào
+/* ===== 2. Vẽ vùng: liên thông, RỜI NHAU, mỗi vùng một cỡ riêng =====
+   coVung[v] = số ô mong muốn. Mọc luân phiên để không vùng nào nuốt hết chỗ. */
+function hlVeVung(n, cot, coVung, R, choSan = 0){
+  const chu = Array.from({length:n}, () => Array(n).fill(-1));   // -1 trống, -2 mốc
   const vung = [];
   for(let v=0; v<n; v++){ chu[v][cot[v]] = v; vung.push([[v, cot[v]]]); }
 
-  /* choSan người đứng sẵn: vùng của họ chỉ 1 ô, tức là đã lộ chỗ.
-     Đây là bậc nhập môn — giống Sudoku cho sẵn vài số. */
-  const dungYen = new Set(hlShuffle([...Array(n).keys()], R).slice(0, choSan));
+  /* Người đứng sẵn: vùng chỉ 1 ô — gợi ý cho trước, không tính là thoái hoá */
+  const muc = coVung.slice();
+  hlShuffle([...Array(n).keys()], R).slice(0, choSan).forEach(v => muc[v] = 1);
 
-  for(let lop=1; lop<k; lop++){
+  let mocThem = true;
+  while(mocThem){
+    mocThem = false;
     for(let v=0; v<n; v++){
-      if(dungYen.has(v)) continue;
+      if(vung[v].length >= muc[v]) continue;
       const ungVien = [];
       for(const [r,c] of vung[v])
-        for(const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){
+        for(const [dr,dc] of BON){
           const a=r+dr, b=c+dc;
           if(a>=0 && a<n && b>=0 && b<n && chu[a][b] === -1) ungVien.push([a,b]);
         }
-      if(!ungVien.length) continue;                 // vùng bị kẹt, cứ để nhỏ hơn
+      if(!ungVien.length) continue;               // vùng bị kẹt, đành để nhỏ hơn
       const [a,b] = hlPick(ungVien, R);
       chu[a][b] = v; vung[v].push([a,b]);
+      mocThem = true;
     }
   }
   return { vung, chu };
 }
 
-/* ===== 3. Đếm nghiệm (dừng sớm khi đủ giới hạn) ===== */
-function hlDemNghiem(n, vung, gioiHan = 2){
+/* ===== 3. Một vùng ÔM HẾT chỗ trống còn lại (sân hội mênh mông).
+   Loang từ chính vùng đó nên chắc chắn vẫn liền mạch. Gọi SAU khi đã đặt mốc,
+   để mốc không bị nuốt mất. ===== */
+function hlOmHet(n, chu, vung, v){
+  let them = true;
+  while(them){
+    them = false;
+    for(const [r,c] of vung[v].slice())
+      for(const [dr,dc] of BON){
+        const a=r+dr, b=c+dc;
+        if(a>=0 && a<n && b>=0 && b<n && chu[a][b] === -1){
+          chu[a][b] = v; vung[v].push([a,b]); them = true;
+        }
+      }
+  }
+}
+
+/* ===== 4. Mốc cảnh vật: ô KHÔNG thuộc vùng nào, nằm kề ô lời giải của một người.
+   Người ấy buộc đứng kề mốc → siết lựa chọn mà vùng vẫn to, vẫn đẹp. ===== */
+function hlDatMoc(n, cot, chu, soMoc, R){
+  const moc = [];
+  for(const v of hlShuffle([...Array(n).keys()], R)){
+    if(moc.length >= soMoc) break;
+    const [r,c] = [v, cot[v]];
+    const oTrong = BON.map(([dr,dc]) => [r+dr, c+dc])
+      .filter(([a,b]) => a>=0 && a<n && b>=0 && b<n && chu[a][b] === -1);
+    if(!oTrong.length) continue;
+    const o = hlPick(oTrong, R);
+    chu[o[0]][o[1]] = -2;                        // -2 = cảnh vật, không ai đứng lên
+    moc.push({ nguoi: v, o });
+  }
+  return moc;
+}
+
+/* Ứng viên THẬT = ô trong vùng, lọc thêm theo mốc.
+   Vùng vẫn hiện nguyên cỡ; mốc siết ngầm — trẻ phải tự ghép hai manh mối. */
+function hlUngVien(vung, moc){
+  const u = vung.map(cells => cells.map(o => o.slice()));
+  for(const m of moc)
+    u[m.nguoi] = u[m.nguoi].filter(([r,c]) => KE4(r, c, m.o[0], m.o[1]));
+  return u;
+}
+
+/* ===== 5. Đếm nghiệm (dừng sớm khi đủ giới hạn) ===== */
+function hlDemNghiem(n, ung, gioiHan = 2){
   const H = new Set(), C = new Set(), da = [];
   let d = 0;
   (function rec(v){
     if(d >= gioiHan) return;
     if(v === n){ d++; return; }
-    for(const [r,c] of vung[v]){
+    for(const [r,c] of ung[v]){
       if(H.has(r) || C.has(c)) continue;
       if(da.some(([a,b]) => KE8(a,b,r,c))) continue;
       H.add(r); C.add(c); da.push([r,c]);
@@ -96,16 +148,14 @@ function hlDemNghiem(n, vung, gioiHan = 2){
   return d;
 }
 
-/* ===== 4. SOLVER KIỂU NGƯỜI — chỉ dùng suy diễn cưỡng bức, TUYỆT ĐỐI không đoán.
-   Đây mới là thước đo thật: một đề có thể duy nhất nghiệm mà vẫn bắt trẻ mò.
-   Ba quy tắc, xếp từ dễ đến khó — số lần dùng quy tắc khó chính là độ khó của đề.
-     QT1 (dễ)  : một người chỉ còn đúng một ô hợp lệ  → đặt luôn
-     QT2 (vừa) : một hàng/cột chỉ còn đúng một người có thể vào → người ấy phải ở đó
-     QT3 (khó) : một ô là lựa chọn của đúng một người, và người đó là người duy nhất
-                 có thể lấp hàng ấy → loại các ô khác của họ
+/* ===== 6. SOLVER KIỂU NGƯỜI — chỉ suy diễn cưỡng bức, TUYỆT ĐỐI không đoán.
+   Đây mới là thước đo thật: đề có thể duy nhất nghiệm mà vẫn bắt trẻ mò.
+     QT1: một người chỉ còn đúng một ô            → đặt luôn
+     QT2: một hàng/cột chỉ còn một người vào được → người ấy phải ở đó
+     QT3: một người chỉ còn nằm trên một hàng     → mọi người khác tránh hàng ấy
    ===== */
-function hlGiaiKieuNguoi(n, vung){
-  const ung = vung.map(cells => cells.map(o => o.slice()));   // ứng viên còn lại
+function hlGiaiKieuNguoi(n, ung0){
+  const ung = ung0.map(cells => cells.map(o => o.slice()));
   const dat = new Array(n).fill(null);
   const dungQT = [0,0,0];
   let batBi = false;
@@ -124,23 +174,19 @@ function hlGiaiKieuNguoi(n, vung){
   while(tien && !batBi){
     tien = false;
 
-    /* QT1 — chỉ còn một ô */
-    for(let v=0; v<n && !batBi; v++){
+    for(let v=0; v<n && !batBi; v++){                       // QT1
       if(dat[v]) continue;
       if(ung[v].length === 0){ batBi = true; break; }
       if(ung[v].length === 1){ datVao(v, ung[v][0], 0); tien = true; }
     }
     if(tien || batBi) continue;
 
-    /* QT2 — hàng (hoặc cột) chỉ còn đúng một người vào được.
-       Đúng vì mỗi hàng và mỗi cột phải có đúng một người. */
-    for(const truc of [0,1]){
+    for(const truc of [0,1]){                               // QT2
       for(let i=0; i<n && !tien; i++){
-        const aiVaoDuoc = [];
-        for(let v=0; v<n; v++)
-          if(ung[v].some(o => o[truc] === i)) aiVaoDuoc.push(v);
-        if(aiVaoDuoc.length !== 1) continue;
-        const v = aiVaoDuoc[0];
+        const ai = [];
+        for(let v=0; v<n; v++) if(ung[v].some(o => o[truc] === i)) ai.push(v);
+        if(ai.length !== 1) continue;
+        const v = ai[0];
         if(dat[v]) continue;
         const hep = ung[v].filter(o => o[truc] === i);
         if(hep.length < ung[v].length){
@@ -152,9 +198,7 @@ function hlGiaiKieuNguoi(n, vung){
     }
     if(tien || batBi) continue;
 
-    /* QT3 — người này là kẻ duy nhất phủ được hàng i, nên mọi ô ngoài hàng i bỏ đi.
-       (khác QT2 ở chỗ xét từ phía người thay vì từ phía hàng) */
-    for(let v=0; v<n && !tien; v++){
+    for(let v=0; v<n && !tien; v++){                        // QT3
       if(dat[v]) continue;
       for(const truc of [0,1]){
         const tuyen = [...new Set(ung[v].map(o => o[truc]))];
@@ -174,56 +218,82 @@ function hlGiaiKieuNguoi(n, vung){
   }
 
   const xong = !batBi && dat.every(Boolean);
-  /* Thang độ khó: đo bằng CÔNG SỨC suy luận, không phải bằng bậc quy tắc cao nhất.
-     Mọi đề đều cần ít nhất vài bước QT2, nên nếu chia theo bậc thì bậc "dễ" luôn rỗng. */
+  /* Không gian tìm kiếm = tích số ô hợp lệ. Nhỏ quá thì trẻ MÒ ra chứ không suy ra —
+     đề hỏng dù logic vẫn duy nhất. Vùng 2 ô × 6 người = 64 tổ hợp: mò được. */
+  const khongGian = ung0.reduce((t, cells) => t * Math.max(cells.length, 1), 1);
+  const phaiTim = ung0.filter(c => c.length > 1);          // bỏ qua người đứng sẵn
+  const itNhat = phaiTim.length ? Math.min(...phaiTim.map(c => c.length)) : 1;
+  /* Độ khó đo bằng CÔNG SỨC, không phải bậc quy tắc cao nhất — vì mọi đề đều cần QT2,
+     chia theo bậc thì bậc "dễ" luôn rỗng. */
   const cong = dungQT[1] + dungQT[2] * 3;
   return {
-    giaiDuoc: xong,
-    dat,
-    dungQT,
-    cong,
+    giaiDuoc: xong, dat, dungQT, cong, khongGian, itNhat,
     doKho: !xong ? null : dungQT[2] > 0 ? "khó" : cong <= 3 ? "dễ" : "vừa"
   };
 }
 
-/* ===== 5. ENGINE SINH ĐỀ ===== */
+/* ===== 7. Dựng một đề thô từ hạt giống — dùng chung cho sinh và thống kê ===== */
+function hlDungDe(n, co, soMoc, choSan, omHet, R){
+  const cot = hlLoiGiai(n, R);
+  if(!cot) return null;
+  const coVung = hlShuffle(Array.from({length:n}, (_, i) => co[i % co.length]), R);
+  const { vung, chu } = hlVeVung(n, cot, coVung, R, choSan);
+  const moc = soMoc ? hlDatMoc(n, cot, chu, soMoc, R) : [];
+  /* ôm hết SAU khi đặt mốc, và người đứng sẵn thì không ôm (vùng họ phải giữ 1 ô) */
+  let vungOm = null;
+  if(omHet){
+    const ungVienOm = [...Array(n).keys()].filter(v => vung[v].length > 1);
+    if(ungVienOm.length){ vungOm = hlPick(ungVienOm, R); hlOmHet(n, chu, vung, vungOm); }
+  }
+  return { cot, coVung, vung, chu, moc, vungOm };
+}
+
+/* ===== 8. ENGINE SINH ĐỀ ===== */
 function sinhDe(opts = {}){
-  const n      = opts.n      ?? 6;      // cạnh bàn cờ = số nhân vật
-  const kMin   = opts.kMin   ?? 3;      // vùng nhỏ nhất
-  const kMax   = opts.kMax   ?? 4;      // vùng lớn nhất
-  const doKho  = opts.doKho  ?? null;   // "dễ" | "vừa" | "khó" | null = nhận hết
-  const choSan = opts.choSan ?? 0;      // số người đứng sẵn (lộ chỗ) — bậc nhập môn
-  const soLan  = opts.soLan  ?? 4000;   // số lần thử tối đa
-  const R      = hlRng(opts.seed ?? (Date.now() & 0x7fffffff));
+  const n      = opts.n      ?? 6;              // cạnh bàn cờ = số nhân vật
+  const co     = opts.co     ?? [4,4,4,4,4,5];  // cỡ từng vùng (xáo thứ tự mỗi lần)
+  const soMoc  = opts.soMoc  ?? 2;              // số cảnh vật làm mốc (0–3)
+  const choSan = opts.choSan ?? 0;              // số người đứng sẵn
+  const omHet  = opts.omHet  ?? false;          // một vùng ôm hết chỗ trống còn lại
+  const doKho  = opts.doKho  ?? null;           // "dễ" | "vừa" | "khó" | null
+  const soLan  = opts.soLan  ?? 8000;
+  const oItNhat    = opts.oItNhat ?? 3;         // cửa chặn thoái hoá
+  const kgToiThieu = opts.khongGianToiThieu ?? 60;
+  const R = hlRng(opts.seed ?? (Date.now() & 0x7fffffff));
 
   for(let lan=0; lan<soLan; lan++){
-    const cot = hlLoiGiai(n, R);
-    if(!cot) continue;
-    const k = kMin + Math.floor(R() * (kMax - kMin + 1));
-    const { vung, chu } = hlVeVung(n, cot, k, R, choSan);
+    const t = hlDungDe(n, co, soMoc, choSan, omHet, R);
+    if(!t) continue;
+    const ung = hlUngVien(t.vung, t.moc);
 
-    if(hlDemNghiem(n, vung, 2) !== 1) continue;       // phải duy nhất
-    const g = hlGiaiKieuNguoi(n, vung);
-    if(!g.giaiDuoc) continue;                          // phải giải được, không đoán
+    if(hlDemNghiem(n, ung, 2) !== 1) continue;         // phải duy nhất
+    const g = hlGiaiKieuNguoi(n, ung);
+    if(!g.giaiDuoc) continue;                           // phải suy ra, không đoán
+    if(g.itNhat < oItNhat) continue;                    // không ai bị bó còn 1–2 ô
+    if(g.khongGian < kgToiThieu) continue;              // cả bàn phải đủ rộng
     if(doKho && g.doKho !== doKho) continue;
 
     return {
-      n, k, choSan, seed: opts.seed ?? null, soLanThu: lan + 1,
-      loiGiai: cot.map((c,r) => [r,c]),
-      vung, chu,
-      doKho: g.doKho, dungQT: g.dungQT, cong: g.cong
+      n, co: t.coVung, soMoc: t.moc.length, choSan, vungOm: t.vungOm,
+      seed: opts.seed ?? null, soLanThu: lan + 1,
+      loiGiai: t.cot.map((c,r) => [r,c]),
+      vung: t.vung, chu: t.chu, moc: t.moc,
+      doKho: g.doKho, dungQT: g.dungQT, cong: g.cong,
+      khongGian: g.khongGian, itNhat: g.itNhat
     };
   }
   return null;
 }
 
-/* ===== 6. ENGINE KIỂM ĐỀ — soi một đề bất kỳ, kể cả đề vẽ tay ===== */
+/* ===== 9. ENGINE KIỂM ĐỀ — soi được cả đề máy sinh lẫn đề vẽ tay ===== */
 function kiemDe(de){
   const { n, vung } = de;
-  const soNghiem = hlDemNghiem(n, vung, 3);
-  const g = hlGiaiKieuNguoi(n, vung);
+  const moc = de.moc || [];
+  const ung = hlUngVien(vung, moc);
+  const soNghiem = hlDemNghiem(n, ung, 3);
+  const g = hlGiaiKieuNguoi(n, ung);
 
-  /* vùng có chồng nhau không — hai địa danh đè lên nhau là vô nghĩa */
+  /* vùng chồng nhau — hai địa danh đè lên nhau là vô nghĩa */
   const dem = {};
   let chongNhau = 0;
   vung.forEach(cells => cells.forEach(([r,c]) => {
@@ -231,13 +301,17 @@ function kiemDe(de){
     if(dem[t] === 2) chongNhau++;
   }));
 
+  /* mốc có lỡ nằm đè lên vùng nào không */
+  const mocDeVung = moc.filter(m =>
+    vung.some(cells => cells.some(([r,c]) => r === m.o[0] && c === m.o[1]))).length;
+
   /* vùng có liền mạch không */
   const roiRac = vung.filter(cells => {
     const s = new Set(cells.map(o => o.join(",")));
     const q = [cells[0]], tham = new Set([cells[0].join(",")]);
     while(q.length){
       const [r,c] = q.pop();
-      for(const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      for(const [dr,dc] of BON){
         const t = (r+dr) + "," + (c+dc);
         if(s.has(t) && !tham.has(t)){ tham.add(t); q.push([r+dr, c+dc]); }
       }
@@ -245,43 +319,49 @@ function kiemDe(de){
     return tham.size !== cells.length;
   }).length;
 
-  const dat = soNghiem === 1 && g.giaiDuoc && chongNhau === 0 && roiRac === 0;
+  const thoaiHoa = g.itNhat < 3 || g.khongGian < 60;
+  const dat = soNghiem === 1 && g.giaiDuoc && !chongNhau && !roiRac
+            && !mocDeVung && !thoaiHoa;
   return {
     dat, soNghiem, giaiBangSuyLuan: g.giaiDuoc, doKho: g.doKho,
-    dungQT: g.dungQT, oChongNhau: chongNhau, vungRoiRac: roiRac,
-    coVung: vung.map(v => v.length),
+    khongGian: g.khongGian, oItNhat: g.itNhat, dungQT: g.dungQT,
+    coVung: vung.map(v => v.length), soMoc: moc.length,
     ghiChu: dat ? "đạt chuẩn"
       : soNghiem === 0 ? "vô nghiệm"
       : soNghiem > 1 ? `${soNghiem}+ nghiệm — chưa duy nhất`
       : !g.giaiDuoc ? "duy nhất nhưng phải ĐOÁN mới ra"
       : chongNhau ? "các vùng chồng lên nhau"
-      : "vùng bị đứt đoạn"
+      : roiRac ? "vùng bị đứt đoạn"
+      : mocDeVung ? "mốc nằm đè lên vùng — mốc phải là ô cảnh vật riêng"
+      : `thoái hoá — mò ra được (hẹp nhất ${g.itNhat} ô, cả bàn ${g.khongGian} tổ hợp)`
   };
 }
 
-/* ===== 7. Thống kê để chỉnh tham số ===== */
+/* ===== 10. Thống kê để chỉnh tham số ===== */
 function hlThongKe(opts = {}){
-  const n = opts.n ?? 6, soLan = opts.soLan ?? 3000, choSan = opts.choSan ?? 0;
+  const n = opts.n ?? 6, soLan = opts.soLan ?? 2000;
+  const co = opts.co ?? [4,4,4,4,4,5];
   const R = hlRng(opts.seed ?? 12345);
-  const bang = {};
-  for(let k = opts.kMin ?? 2; k <= (opts.kMax ?? 5); k++){
-    let duyNhat = 0, suyLuanDuoc = 0, tong = 0;
-    const kho = { dễ:0, vừa:0, khó:0 };
-    for(let t=0; t<soLan; t++){
-      const cot = hlLoiGiai(n, R); if(!cot) continue;
-      tong++;
-      const { vung } = hlVeVung(n, cot, k, R, choSan);
-      if(hlDemNghiem(n, vung, 2) !== 1) continue;
-      duyNhat++;
-      const g = hlGiaiKieuNguoi(n, vung);
-      if(g.giaiDuoc){ suyLuanDuoc++; kho[g.doKho]++; }
+  let duyNhat = 0, dungChuan = 0, tong = 0, tongKG = 0, tongOm = 0;
+  const kho = { dễ:0, vừa:0, khó:0 };
+  for(let i=0; i<soLan; i++){
+    const t = hlDungDe(n, co, opts.soMoc ?? 0, opts.choSan ?? 0, opts.omHet ?? false, R);
+    if(!t) continue;
+    tong++;
+    const ung = hlUngVien(t.vung, t.moc);
+    if(hlDemNghiem(n, ung, 2) !== 1) continue;
+    duyNhat++;
+    const g = hlGiaiKieuNguoi(n, ung);
+    if(g.giaiDuoc && g.itNhat >= 3 && g.khongGian >= 60){
+      dungChuan++; kho[g.doKho]++; tongKG += g.khongGian;
+      if(t.vungOm !== null) tongOm += t.vung[t.vungOm].length;
     }
-    bang[`vùng ${k} ô`] = {
-      duyNhat: +(duyNhat/tong*100).toFixed(1) + "%",
-      dungChuan: +(suyLuanDuoc/tong*100).toFixed(1) + "%",
-      trongSoDuyNhatThiSuyLuanDuoc: duyNhat ? +(suyLuanDuoc/duyNhat*100).toFixed(0) + "%" : "-",
-      phanBoDoKho: kho
-    };
   }
-  return bang;
+  return {
+    duyNhat: +(duyNhat/tong*100).toFixed(1) + "%",
+    dungChuan: +(dungChuan/tong*100).toFixed(1) + "%",
+    khongGianTB: dungChuan ? Math.round(tongKG/dungChuan) : 0,
+    vungOmTB: dungChuan && tongOm ? +(tongOm/dungChuan).toFixed(1) : null,
+    phanBoDoKho: kho
+  };
 }

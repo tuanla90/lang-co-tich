@@ -54,9 +54,20 @@ Ba hướng, không làm song song:
   bộ sinh đề từ từ vựng đã mở khoá + solver đếm lời giải làm thước độ khó
   (nền tảng có sẵn: audit.js đã đo độ chặt). Mô hình Wordle: mỗi ngày một đề,
   cả nhà cùng giải, chia sẻ kết quả. Đây là engine giữ chân + lan truyền.
-- **C2. Bảng kỹ năng phụ huynh**: gắn nhãn kỹ năng cho từng màn (suy luận /
-  không gian / đọc hiểu / ghi nhớ), màn hình "bé mạnh gì yếu gì".
-  Đây là tính năng BÁN HÀNG (thị trường toán tư duy) hơn là tính năng chơi.
+- **C2. Bảng kỹ năng phụ huynh** ⬆ **ĐÃ NÂNG ƯU TIÊN — bắt đầu ngay sau phép thử A**
+  (quyết định 2026-08: đây là tính năng bán hàng cốt lõi cho thị trường toán tư duy).
+  Lộ trình 2 bước:
+  1. *Gắn nhãn trước (làm dần từ bây giờ)* — thêm trường `skills:[...]` vào từng màn.
+     Bộ nhãn chốt 5 loại:
+     - `suyluan`  — loại trừ, đối chiếu manh mối (ma trận, nói ngược)
+     - `khonggian`— vị trí, hướng, sau lưng, kề/cách (bàn cờ, tường)
+     - `dochieu`  — đọc lời dẫn/chip để rút ra luật (nghe lén, lời Cuội)
+     - `ghinho`   — nhớ chi tiết truyện, ghép trình tự (màn story)
+     - `kehoach`  — xếp nhiều ràng buộc chồng nhau, thử-sai có tính toán (chain, đoàn rước)
+     Một màn 1–3 nhãn. Nhãn nằm sẵn trong dữ liệu → màn mới nào cũng gắn ngay từ đầu.
+  2. *Màn hình phụ huynh* — tổng hợp từ save: mỗi kỹ năng đếm màn đã qua /
+     số lần reset / thời gian trung bình (cần ghi thêm 2 số này vào save),
+     hiển thị "bé mạnh gì, đang tập gì" bằng lời — KHÔNG chấm điểm con số.
 - **C3. Mùa 2 — Bến tàu năm châu**: Grimm/Andersen theo khung thuyền buôn
   ghé bến (đã thiết kế: PD sạch, tránh tạo hình Disney, art Đông Hồ,
   không trộn nhân vật hai thế giới ngoài bến tàu).
