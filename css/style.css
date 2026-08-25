@@ -297,3 +297,4 @@ h1 .tilde{color:var(--la)}
   animation:hintPulse 1.1s ease-in-out infinite}
 @keyframes hintPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 @media (prefers-reduced-motion:reduce){#hintBtn.glow{animation:none}}
+.t-hoi{font-size:15px;padding:9px 22px;background:var(--hoe);border-color:var(--muc)}

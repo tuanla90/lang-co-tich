@@ -13,12 +13,13 @@ CHAPTERS.push({
 
   {type:"place", name:"Kén rể", cols:5, rows:3,
    scene:"Vua Hùng có nàng công chúa <b>Mị Nương</b> xinh đẹp, mở hội kén rể. Cùng một ngày, <b>hai vị thần</b> đến cầu hôn: thần núi <b>Sơn Tinh</b> và thần nước <b>Thuỷ Tinh</b>. Cả hai đều muốn đứng bên nàng — nhưng hai thần thì <b>gườm nhau</b>, chẳng ai chịu đứng cạnh ai!",
-   env:[{id:"cung",cells:[[0,0]]},{id:"nui",cells:[[4,0]]},{id:"ao",cells:[[4,2]]},{id:"cayda",cells:[[2,2]]},{id:"tre",cells:[[0,2]]}], blocked:[], mud:[],
+   env:[{id:"cung",cells:[[0,0]]},{id:"nui",cells:[[4,0]]},{id:"ao",cells:[[4,1]]},{id:"cayda",cells:[[2,2]]},{id:"tre",cells:[[0,2]]}], blocked:[], mud:[],
    chars:["vua","minuong","sontinh","thuytinh"],
    cons:[{t:"adjEnv",c:"vua",e:"cung",txt:"Vua Hùng ngự trước điện"},
          {t:"adjChar",c:"minuong",target:"vua",txt:"Mị Nương đứng cạnh cha"},
          {t:"adjEnv",c:"sontinh",e:"nui",txt:"Sơn Tinh — chúa vùng non cao"},
-         {t:"adjEnv",c:"thuytinh",e:"ao",txt:"Thuỷ Tinh — chúa miền nước thẳm"}],
+         {t:"adjEnv",c:"thuytinh",e:"ao",txt:"Thuỷ Tinh — chúa miền nước thẳm"},
+         {t:"notAdjChar",c:"sontinh",target:"thuytinh",txt:"Hai thần gườm nhau — KHÔNG đứng cạnh nhau"}],
    story:"Vua Hùng nhìn hai chàng rể, khó xử: người nào cũng tài giỏi phi thường. “Vậy hai ngươi hãy <b>trổ tài</b> cho ta xem!”"},
 
   {type:"place", name:"Trổ tài", cols:5, rows:4,

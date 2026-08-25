@@ -80,6 +80,17 @@ $("startBtn").onclick = ()=>{           // cú chạm đầu tiên cũng "mở k
   $("titleVeil").classList.remove("show");
   if(window.SFX) SFX.play("pop");
 };
+/* Hội làng: chế độ phụ, vào thẳng được từ màn mở đầu, không cần mở khoá chương */
+/* trỏ đích danh chương 99 — các màn hoilang chèn giữa mạch truyện (chợ Tết) không cướp nút này */
+const ch99 = CHAPTERS.find(c => c.id === 99);
+const iHoi = ch99 ? LEVELS.indexOf(ch99.levels[0]) : -1;
+if(iHoi < 0) $("hoiBtn").style.display = "none";
+else $("hoiBtn").onclick = ()=>{
+  $("titleVeil").classList.remove("show");
+  if(window.SFX) SFX.play("pop");
+  load(iHoi);
+};
+
 $("startOver").onclick = ()=>{
   if(!confirm("Chơi lại từ đầu? (Túi đồ vẫn giữ nguyên)")) return;
   try{ localStorage.removeItem("lct_save"); }catch(e){}

@@ -41,8 +41,8 @@ CHAPTERS.push({
    scene:"Ở làng, Cuội nổi tiếng là chúa <b>nói đùa nói ngược</b> — “nói dối như Cuội” mà! Nghe chàng nói gì… <b>cứ hiểu ngược lại là đúng</b>:",
    env:[{id:"ao",cells:[[0,0]]},{id:"cayda",cells:[[2,0]]},{id:"tre",cells:[[0,2]]}], blocked:[], mud:[],
    chars:["cuoi","vocuoi"],
-   cons:[{t:"adjEnv",c:"cuoi",e:"ao",txt:"Cuội bảo: “tôi GHÉT mép ao!” — ngược đấy, chàng đứng ngay sát bờ"},
-         {t:"notAdjEnv",c:"cuoi",e:"cayda",txt:"Cuội bảo: “tôi mê trèo cây đa lắm!” — đừng tin, chàng chẳng bén mảng tới"},
+   cons:[{t:"onEnv",c:"cuoi",e:"cayda",txt:"Cuội bảo: “tôi GHÉT trèo cây nhất trần đời!” — ngược đấy: chàng ngồi vắt vẻo cả ngày"},
+         {t:"notAdjEnv",c:"cuoi",e:"ao",txt:"Cuội bảo: “tôi mê đứng sát mép ao lắm!” — đừng tin!"},
          {t:"adjChar",c:"vocuoi",target:"cuoi",txt:"Cuội bảo: “vợ tôi chẳng thèm đứng gần tôi” — lại ngược nốt!"}],
    story:"Cả làng cười bò: “Đúng là <b>nói dối như Cuội</b>!” — mà lạ thay, ai cũng quý chàng. Có người để ý: dạo này đầu làng có <b>cây đa</b> lạ, và hình như <b>có ai hay ngồi vắt vẻo trên đó</b>…"},
 

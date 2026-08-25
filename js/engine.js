@@ -39,9 +39,13 @@ function collectRelic(id){
    chèn/xoá/đổi chỗ màn về sau không làm hỏng save của người chơi. */
 function saveProgress(){
   try{
+    /* Hội làng là chế độ phụ: vẫn ghi nhận màn đã xong, nhưng KHÔNG dời chỗ
+       đang dở của mạch truyện — kẻo "Chơi tiếp" lại mở vào hội làng. */
+    const cu = JSON.parse(localStorage.getItem("lct_save") || "null") || {};
+    const laPhu = LEVELS[cur] && LEVELS[cur].type === "hoilang";
     localStorage.setItem("lct_save", JSON.stringify({
       done: done.map(i => LEVELS[i] && LEVELS[i].id).filter(Boolean),
-      cur:  LEVELS[cur] ? LEVELS[cur].id : null,
+      cur:  laPhu ? (cu.cur || null) : (LEVELS[cur] ? LEVELS[cur].id : null),
     }));
   }catch(e){}
 }

@@ -306,6 +306,8 @@ function sinhDe(opts = {}){
     if(!t) continue;
     const ung = hlUngVien(t.vung, t.moc);
 
+    /* soMoc là mức TRẦN — hlDatMoc hết chỗ thì trả ít hơn. Cần đủ thì bật soMocDu. */
+    if(opts.soMocDu && t.moc.length < soMoc) continue;
     if(hlDemNghiem(n, ung, 2) !== 1) continue;         // phải duy nhất
     const g = hlGiaiKieuNguoi(n, ung);
     if(!g.giaiDuoc) continue;                           // phải suy ra, không đoán
@@ -414,15 +416,23 @@ function hlThongKe(opts = {}){
 
 const hlDoi = ([r,c]) => [c,r];        // [hàng,cột] → [x,y]
 
-/* Dựng một màn hội làng hoàn chỉnh, sẵn sàng nhét vào LEVELS */
+/* Dựng một màn hội làng hoàn chỉnh, sẵn sàng nhét vào LEVELS.
+   LƯU Ý nền tảng: solver-kiểu-người (QT2) dựa chuồng-bồ-câu n người = n hàng = n cột —
+   bàn LUÔN vuông và đủ người. Muốn bàn khác cỡ phải viết lại QT2 trước. */
 function taoManHoiLang(opt){
+  if(!opt.chars || opt.chars.length < 2) return null;   // chặn cấu hình vi phạm giả định trên
   const de = sinhDe({
     n: opt.chars.length, co: opt.co, soMoc: opt.soMoc, soVatCan: opt.soVatCan,
-    omHet: opt.omHet, doKho: opt.doKho, seed: opt.seed, soLan: opt.soLan ?? 80000
+    omHet: opt.omHet, doKho: opt.doKho, seed: opt.seed, soLan: opt.soLan ?? 80000,
+    /* bàn nhỏ (4×4) cần hạ cửa chống thoái hoá — ngưỡng mặc định chỉnh cho 6×6 */
+    khongGianToiThieu: opt.khongGianToiThieu, oItNhat: opt.oItNhat,
+    soMocDu: opt.soMocDu
   });
   if(!de) return null;
 
   const vung = de.vung.map(cells => cells.map(hlDoi));
+  /* mỗi mốc một hình RIÊNG — hai mốc cùng hình thì manh mối "cạnh cây đa" mơ hồ */
+  const arts = opt.mocArts || [opt.mocArt || "cayda"];
   return {
     type: "hoilang",
     name: opt.name || "Hội làng",
@@ -432,7 +442,8 @@ function taoManHoiLang(opt){
     story: opt.story || "",
     vung,                                            // vung[i] = ô của chars[i]
     tenVung: opt.tenVung || de.vung.map((_,i)=>"Vùng "+(i+1)),
-    moc: de.moc.map(m => ({ c: opt.chars[m.nguoi], o: hlDoi(m.o) })),
+    moc: de.moc.map((m,i) => ({ c: opt.chars[m.nguoi], o: hlDoi(m.o), art: arts[i % arts.length] })),
+    datTuDo: !!opt.datTuDo,            // true: đặt đâu cũng được — luật vùng tự CHẤM thay vì chặn
     vatCan: de.vatCan.map(hlDoi),
     mocArt: opt.mocArt || "cayda",
     canArt: opt.canArt || "ao",
@@ -451,7 +462,7 @@ function hlLuat(lv){
     { txt: "Ai cũng đứng trong vùng của mình" },
   ];
   for(const m of lv.moc)
-    ds.push({ txt: `${CHARS[m.c].name} đứng cạnh ${ENVS[lv.mocArt].name}` });
+    ds.push({ txt: `${CHARS[m.c].name} đứng cạnh ${ENVS[m.art || lv.mocArt].name}` });
   return ds;
 }
 
@@ -491,10 +502,12 @@ function hlCham(lv){
   return res;
 }
 
-/* Ô này có đặt người được không: phải trong vùng của người đó, không phải mốc/vật cản */
+/* Ô này có đặt người được không: phải trong vùng của người đó, không phải mốc/vật cản.
+   Màn datTuDo: đặt đâu cũng được — luật vùng chuyển từ CHẶN sang CHẤM (chip sẽ đỏ). */
 function hlDatDuoc(lv, c, x, y){
   if(lv.vatCan.some(o => o[0]===x && o[1]===y)) return false;
   if(lv.moc.some(m => m.o[0]===x && m.o[1]===y)) return false;
+  if(lv.datTuDo) return x>=0 && y>=0 && x<lv.cols && y<lv.rows;
   const i = lv.chars.indexOf(c);
   return i >= 0 && lv.vung[i].some(o => o[0]===x && o[1]===y);
 }

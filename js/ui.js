@@ -55,7 +55,7 @@ function render(){
 }
 
 /* ===== Bộ chọn chương (bản đồ làng thu nhỏ) + chấm màn theo chương ===== */
-const CH_ICON = {1:"tam",2:"bom",3:"khoai",4:"giongts",5:"sontinh",6:"tan",7:"antiem",8:"cuoi"};
+const CH_ICON = {1:"tam",2:"bom",3:"khoai",4:"giongts",4.5:"phuong",5:"sontinh",6:"tan",7:"antiem",8:"cuoi",99:"but"};
 
 function renderNav(lv){
   let idx=0;
@@ -554,10 +554,10 @@ function renderHoiLang(lv){
 
     let inner="";
     if(can) inner+=ENVS[lv.canArt].svg;
-    if(moc) inner+=ENVS[lv.mocArt].svg;
+    if(moc) inner+=ENVS[moc.art||lv.mocArt].svg;
     if(ch)  inner+=`<div class="tok ${held===ch?'held':''}">${CHARS[ch].svg}</div>`;
 
-    const lbl = ch?CHARS[ch].name : moc?ENVS[lv.mocArt].name : can?ENVS[lv.canArt].name
+    const lbl = ch?CHARS[ch].name : moc?ENVS[moc.art||lv.mocArt].name : can?ENVS[lv.canArt].name
               : v>=0?lv.tenVung[v] : `ô trống ${x+1},${y+1}`;
     html+=`<button class="${cls}" style="${vien}" data-x="${x}" data-y="${y}" aria-label="${lbl}">${inner}</button>`;
   }
@@ -569,7 +569,7 @@ function renderHoiLang(lv){
     c.onmouseenter=()=>{ const v=hlVungCua(lv,x,y), ch=charAt(x,y);
       const m=lv.moc.find(o=>o.o[0]===x&&o.o[1]===y);
       $("nameplate").innerHTML = ch?`<b>${CHARS[ch].name}</b>`
-        : m?`<b>${cap(ENVS[lv.mocArt].name)}</b> — ${CHARS[m.c].name} phải đứng kề bên`
+        : m?`<b>${cap(ENVS[m.art||lv.mocArt].name)}</b> — ${CHARS[m.c].name} phải đứng kề bên`
         : lv.vatCan.some(o=>o[0]===x&&o[1]===y)?`<b>${cap(ENVS[lv.canArt].name)}</b> — không đứng lên được`
         : v>=0?`<b>${lv.tenVung[v]}</b>` : ""; };
     c.onmouseleave=()=>{ $("nameplate").innerHTML=""; };
