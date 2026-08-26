@@ -60,6 +60,25 @@ CHAPTERS.push({
    cons:[{t:"onEnv",c:"nangluu",e:"caycau",txt:"Nàng ôm chặt thân cau, không chịu rời"}],
    story:"Nàng hoá thành <b>dây trầu không</b>, lá xanh mướt, <b>quấn chặt quanh thân cau</b> — thế là ba người lại được ở bên nhau, mãi mãi."},
 
+  /* ---- Điểm xuyết: ba người hoá ba thứ, mỗi thứ tựa vào thứ trước ---- */
+  {type:"story", name:"Ba người hoá ba cây",
+   scene:"Vua Hùng đi qua, nghe dân kể lại chuyện lạ bên bờ suối: ba người mất tích, ba thứ mọc lên. <b>Chạm vào một hình, rồi chạm vào khung tranh nó thuộc về.</b>",
+   pieces:["caycau","daytrau","tangda"],
+   panels:[
+     {label:"Bờ suối, đêm đầu", who:["lang"],
+      cue:"Người em đi mãi, tới bờ suối thì kiệt sức, ngồi khóc suốt đêm. Sáng ra chẳng thấy người đâu.",
+      answer:"tangda", after:"Bên suối chỉ còn một tảng đá vôi trắng, lặng im nghe nước chảy."},
+     {label:"Bờ suối, đêm sau", who:["tan"],
+      cue:"Người anh đi tìm em, thấy <b>tảng đá lạ</b> bên suối thì ngồi tựa vào, không chịu rời.",
+      answer:"caycau", after:"Chàng hoá cây cau, mọc thẳng tắp ngay bên tảng đá."},
+     {label:"Bờ suối, đêm thứ ba", who:["nangluu"],
+      cue:"Nàng đi tìm chồng, gặp <b>cây cau</b> mọc bên tảng đá, ôm lấy thân cây mà khóc.",
+      answer:"daytrau", after:"Nàng hoá dây trầu, lá xanh mướt quấn chặt quanh thân cau."}
+   ],
+   revealArt:"caycau",
+   reveal:"Ba người lại được ở bên nhau.",
+   story:"Vua nghe xong, lặng người hồi lâu: “Ba người thương nhau đến thế…” — rồi sai lấy thử lá, quả và chút vôi từ đá."},
+
   {type:"place", name:"Miếng trầu đỏ thắm", cols:5, rows:3,
    scene:"Một hôm <b>vua Hùng</b> đi qua, nghe dân làng kể chuyện ba người, vua rưng rưng đứng lặng hồi lâu. Ba hoá thân giờ <b>mãi mãi kề nhau</b> bên bờ suối: tảng đá — cây cau — dây trầu.",
    env:[{id:"ao",cells:[[4,0],[4,1],[4,2]]},{id:"dinh",cells:[[0,0]]},{id:"cayda",cells:[[0,2]]},{id:"tre",cells:[[2,2]]},{id:"caycau",cells:[[2,0]]}], blocked:[], mud:[],

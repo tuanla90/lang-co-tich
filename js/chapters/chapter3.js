@@ -61,7 +61,7 @@ CHAPTERS.push({
    env:[{id:"cong",cells:[[0,1]]},{id:"dinh",cells:[[4,0]]},{id:"tre",cells:[[4,2]]},{id:"mamco",cells:[[2,0]]},{id:"tre",cells:[[1,2]]},{id:"tangda",cells:[[3,2]]},{id:"nha",cells:[[0,0]]}], blocked:[], mud:[],
    chars:["dot1","dot2","phuong","chure","khoai"],
    cons:[{t:"queue",cs:["dot1","dot2","phuong","chure"],txt:"Dính theo thứ tự: tre → tre → phú ông → công tử"},
-         {t:"adjEnv",c:"dot1",e:"mamco",txt:"Cây tre dựng ngay bên mâm cỗ"},
+         {t:"adjEnv",c:"dot1",e:"mamco",txt:"GỐC tre (đốt đầu tiên) dựng ngay bên mâm cỗ"},
          {t:"adjEnv",c:"khoai",e:"cong",txt:"Khoai đứng ngoài cổng đọc chú"}],
    story:"Phú ông mếu máo: “Khoai ơi, tha cho ta! Ta gả con gái cho con thật mà!” — nói ba lần, Khoai mới đọc: “<b>Khắc xuất!</b>”"},
 

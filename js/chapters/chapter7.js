@@ -67,6 +67,28 @@ CHAPTERS.push({
          {t:"adjChar",c:"voat",target:"antiem",txt:"Vợ chàng thả thêm quả nữa"}],
    story:"Sóng đưa dưa đi… Một thuyền buôn vớt được quả dưa lạ ruột đỏ, đọc thấy dòng chữ khắc: <b>“Mai An Tiêm”</b>. Tiếng đồn theo thuyền về tận kinh đô — đến tai <b>vua</b>."},
 
+  /* ---- Điểm xuyết: một hạt nhỏ đưa cả nhà về ---- */
+  {type:"story", name:"Từ một hạt đen",
+   scene:"Đêm trên đảo, bé An hỏi: “Cha ơi, sao nhà mình lại được về?” An Tiêm cười, kể lại từ đầu. <b>Xếp lại chặng đường của hạt dưa.</b>",
+   pieces:["duathu","hatden","thuyen","dua1"],
+   panels:[
+     {label:"Bãi cát", who:["chimtrang"],
+      cue:"Con chim trắng lạ bay tới, nhả xuống bãi cát một thứ nhỏ xíu, đen nhánh.",
+      answer:"hatden", after:"“Chim quý ăn được, hẳn người cũng trồng được!”"},
+     {label:"Sau mấy tháng", who:["voat"],
+      cue:"Gieo xuống cát, tưới nước… ít lâu sau cả bãi xanh um, quả tròn lăn lóc.",
+      answer:"dua1", after:"Bổ thử một quả: ruột đỏ au, ngọt mát tận ruột gan!"},
+     {label:"Mép sóng", who:["antiem"],
+      cue:"Chàng khắc tên mình lên vỏ một quả, rồi thả xuống biển, mặc sóng đưa đi.",
+      answer:"duathu", after:"Sóng đưa quả dưa đi xa, xa mãi…"},
+     {label:"Ngoài khơi", who:["linh"],
+      cue:"Người ta vớt được quả lạ ruột đỏ, đọc thấy dòng chữ khắc trên vỏ, vội mang dâng vua.",
+      answer:"thuyen", after:"Vua đọc tên, giật mình: “Mai An Tiêm còn sống!”"}
+   ],
+   revealArt:"antiem",
+   reveal:"Một hạt nhỏ đưa cả nhà về!",
+   story:"Bé An reo lên: “Thế là nhờ con chim ạ?” — An Tiêm lắc đầu cười: “Nhờ bàn tay mình, con ạ. Chim chỉ cho cái hạt thôi.”"},
+
   {type:"place", name:"Vua đón về", cols:5, rows:4,
    scene:"Vua nghe chuyện, lặng người: “Nó nói đúng — <b>bàn tay làm ra tất cả</b>. Ta sai rồi.” Vua sai <b>thuyền lớn</b> ra tận đảo. Lính chèo thuyền chờ dưới bến, vua bước lên bãi cát…",
    env:[{id:"thuyen",cells:[[4,2]]},{id:"leu",cells:[[0,0]]},

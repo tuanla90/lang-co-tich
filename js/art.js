@@ -234,3 +234,7 @@ PLACES.giengp = {name:"Giếng làng", svg:ENVS.gieng.svg};
 PLACES.caythuocp = {name:"Gốc cây thuốc", svg:ENVS.caythuoc.svg};
 
 RELICS.lathuoc = {name:"Lá thuốc thần", lore:"cải tử hoàn sinh — chỉ mọc trên một cây duy nhất", svg:`<svg viewBox="0 0 60 60"><path d="M30 50 Q14 38 16 20 Q30 24 32 38 Q34 22 46 14 Q48 34 30 50 Z" fill="#6FAF5A" stroke="#3B2B1E" stroke-width="2.5"/><path d="M30 48 Q28 34 24 26" stroke="#3E6E34" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`};
+
+/* Dây trầu — nàng Lưu hoá thân, quấn quanh thân cau */
+ENVS.daytrau = {name:"dây trầu", svg:`<svg viewBox="0 0 60 60"><path d="M30 54 Q28 34 30 14" stroke="#5A7D3C" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M30 44 Q18 40 16 28 Q28 30 30 44 Z" fill="#5A7D3C" stroke="#3B2B1E" stroke-width="2"/><path d="M30 32 Q42 28 44 16 Q32 18 30 32 Z" fill="#6B8F47" stroke="#3B2B1E" stroke-width="2"/><path d="M30 20 Q20 16 19 8 Q29 10 30 20 Z" fill="#5A7D3C" stroke="#3B2B1E" stroke-width="2"/></svg>`};
+LORE.daytrau = "lá xanh mướt, quấn chặt lấy thân cau — chẳng rời nửa bước";

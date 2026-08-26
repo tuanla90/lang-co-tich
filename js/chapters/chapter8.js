@@ -65,6 +65,28 @@ CHAPTERS.push({
          {t:"adjChar",c:"cho",target:"vocuoi",txt:"Con chó vàng nép bên chân"}],
    story:"Cây bay mãi, bay mãi — qua ngọn tre, qua đỉnh núi, lên tận <b>cung trăng</b> — rồi đáp xuống, mọc rễ ở đó, mang theo cả chú Cuội."},
 
+  /* ---- Điểm xuyết: vì sao chú Cuội lại ngồi trên cung trăng ---- */
+  {type:"story", name:"Vì sao Cuội lên trăng",
+   scene:"Cây đa đã đáp xuống cung trăng. Cuội ngồi dưới gốc, nhớ lại đầu đuôi. <b>Xếp lại xem chuyện bắt đầu từ đâu.</b>",
+   pieces:["vocuoi","caythuoc","cayda","cuoi"],
+   panels:[
+     {label:"Trong rừng", who:["hocon"],
+      cue:"Hổ mẹ nhai một thứ lá đắp cho con — hổ con đang thiêm thiếp bỗng bật dậy khoẻ re.",
+      answer:"caythuoc", after:"Đợi mẹ con hổ đi khuất, Cuội đào ngay cây thuốc mang về trồng."},
+     {label:"Bên bờ ao", who:["cogai"],
+      cue:"Người vừa được vớt dưới ao lên đã tỉnh lại, má hồng hào như chưa từng gặp nạn. Ai đắp lá?",
+      answer:"cuoi", after:"Cảm ơn nghĩa cứu mạng, nàng nên duyên vợ chồng với chàng."},
+     {label:"Góc vườn", who:["cho"],
+      cue:"Lời dặn chỉ có một câu: tưới nước TRONG thôi. Vậy mà ai quen giặt bên ao, xách nhầm xô nước đục?",
+      answer:"vocuoi", after:"Nước đục vừa ngấm, mặt đất rùng rùng chuyển động."},
+     {label:"Giữa trời", who:["vocuoi"],
+      cue:"Gốc long dần… rồi cả cây bật khỏi đất bay lên. Cuội chạy tới, níu vội lấy thứ gì?",
+      answer:"cayda", after:"Rễ cây kéo chàng lên theo, cao mãi, cao mãi…"}
+   ],
+   revealArt:"cuoi",
+   reveal:"Thế là Cuội theo cây lên tận cung trăng.",
+   story:"Cuội thở dài, ngước nhìn xuống mặt đất xa tít: “Giá hôm ấy mình dặn kỹ hơn một chút…”"},
+
   {type:"place", name:"Cung trăng", cols:4, rows:3,
    scene:"Trên cung trăng lặng lẽ, cây đa mọc rễ giữa nền đá bạc. Cuội ngồi xuống gốc cây, nhìn về phía quê nhà xa tít… <i>“Chú Cuội ngồi gốc cây đa…”</i>",
    env:[{id:"cayda",cells:[[1,1]]},{id:"tangda",cells:[[3,2]]}], blocked:[], mud:[],

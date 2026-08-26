@@ -174,7 +174,7 @@ const HINT_STRAT={
   listen:"Kề bên nhưng đừng để bị thấy: sau lưng, sau rào, hoặc nấp trong bụi.",
   chain:"Cả nhóm phải đứng nối liền nhau, không đứt quãng.",
   line:"Cả nhóm phải đứng thẳng một hàng liền nhau.",
-  queue:"Phải nối đuôi đúng THỨ TỰ đấy.",
+  queue:"Nối đuôi đúng THỨ TỰ — nhưng được GẤP KHÚC, không cần thẳng hàng!",
   notTer:"Nhìn màu ô đất — ô nâu sẫm là bùn."
 };
 
