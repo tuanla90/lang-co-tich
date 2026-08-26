@@ -42,6 +42,18 @@ function win(){
   const endOfChapter = !nxt || nxt._ch !== L()._ch;
   $("winTitle").textContent = endOfChapter ? `Hết ${chShort(L()._ch)}!`
     : PRAISE[Math.floor(Math.random()*PRAISE.length)];
+  /* A6: xong trọn chương (mạch truyện) → trao tem ngay tại đây */
+  let award = "";
+  if(endOfChapter){
+    const c = CHAPTERS.find(cc => cc.levels.includes(L()));
+    if(c && c.id !== 99){
+      const s = chapterStamps().find(x => x.id === c.id);
+      if(s && s.got){ award = `<div class="stamp-award">${stampHtml(s)}
+        <span class="stamp-msg">Nhận tem truyện «${s.title}»! Xem lại trong 🧺 Túi đồ.</span></div>`;
+        if(window.SFX) SFX.play("ding"); }
+    }
+  }
+  $("stampAward").innerHTML = award;
   $("winStory").innerHTML = L().story;
   $("nextBtn").style.display = nxt ? "" : "none";
   $("nextBtn").textContent = (nxt && endOfChapter) ? `Sang ${chShort(nxt._ch)} ▶` : "Màn tiếp theo";

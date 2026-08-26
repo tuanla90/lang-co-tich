@@ -655,7 +655,13 @@ function renderBag(){
       ? `<div class="bag-item">${r.svg}<b>${r.name}</b><span>${r.lore}</span></div>`
       : `<div class="bag-item unknown"><div class="qmark">?</div><b>???</b><span>còn giấu đâu đó trong truyện…</span></div>`;
   }).join("");
-  $("bagTitle").textContent = `Túi đồ — ${relicsGot.length}/${ids.length} di vật`;
+  /* Ngăn hai: tem truyện — mỗi chương xong trọn là một con tem */
+  const stamps = chapterStamps();
+  const gotN = stamps.filter(s => s.got).length;
+  $("bagGrid").innerHTML +=
+    `<div class="bag-sec">Tem truyện — ${gotN}/${stamps.length}</div>` +
+    stamps.map(stampHtml).join("");
+  $("bagTitle").textContent = `Túi đồ — ${relicsGot.length}/${ids.length} di vật · ${gotN}/${stamps.length} tem`;
 }
 
 /* ============================================================
@@ -714,4 +720,30 @@ function renderParent(){
   html += `<p class="p-disclaimer">Đây là quan sát khi chơi — không phải bài kiểm tra
     hay chẩn đoán. Mỗi bé một nhịp; chỉ so bé với chính bé tuần trước.</p>`;
   $("parentBody").innerHTML=html;
+}
+
+/* ============================================================
+   A6: TEM TRUYỆN — xong trọn một chương được một con tem Đông Hồ.
+   Tem SUY RA từ save (mọi màn của chương đều done) — không lưu riêng,
+   không bao giờ lệch, chương xong từ trước cũng tự có tem.
+   Hội làng (id 99) là chế độ phụ: không tem.
+   ============================================================ */
+function chapterStamps(){
+  return CHAPTERS.filter(c => c.id !== 99).map((c, i) => {
+    const start = LEVELS.indexOf(c.levels[0]);
+    const got = c.levels.every((_, j) => done.includes(start + j));
+    let icKey = CH_ICON[c.id];
+    if(!icKey || !CHARS[icKey]){
+      const pl = c.levels.find(l => l.chars && l.chars.length);
+      icKey = pl ? pl.chars[0] : "but";
+    }
+    return { id:c.id, title:(c.name.split("·")[1] || c.name).trim(),
+             svg:CHARS[icKey].svg, got, rot:(i % 2 ? 2 : -2) };
+  });
+}
+function stampHtml(s){
+  return `<div class="stamp ${s.got ? "" : "locked"}" style="--rot:${s.rot}deg">
+    <div class="stamp-in">${s.got ? s.svg : '<div class="qmark">?</div>'}
+      <b>${s.got ? s.title : "???"}</b>
+      <span>LÀNG CỔ TÍCH · 1 xu</span></div></div>`;
 }

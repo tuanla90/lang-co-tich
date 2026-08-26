@@ -18,7 +18,7 @@ Mục tiêu: một đứa trẻ 6–9 tuổi cầm máy tự chơi 15 phút khô
 4. ~~**Gắn nhãn `skills` + `tier`**~~ ✅ — js/skills.js: heuristic theo loại màn + 31 override
    tay; mọi màn (kể cả sinh máy, kể cả thêm sau) luôn có nhãn mặc định hợp lý.
 5. ~~**Đổi lời khen sang khen quá trình**~~ ✅ — mảng PRAISE 7 câu xoay vòng, hết "Giỏi quá!".
-6. **Tem truyện** — xong mỗi chương tặng 1 tem Đông Hồ vào Túi đồ (ngăn thứ hai).
+6. ~~**Tem truyện**~~ ✅ — tem suy ra từ save (xong trọn chương), trao trong hộp thắng, trưng ngăn hai Túi đồ; hội làng không tem.
 7. **Hoàn thiện Hội làng** (hoilang.js — đang làm dở).
 8. **Polish nhỏ**: hiệu ứng thắng, transition chuyển màn, viền bàn ấm lên khi gần xong.
 9. **QA thiết bị thật**: Android tầm trung, tablet — kích thước ô bấm với ngón tay trẻ.
