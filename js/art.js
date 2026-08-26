@@ -60,12 +60,13 @@ const CHARS = {
   khoai:{name:"Anh Khoai", svg:S(`<path d="M17 18 Q30 6 43 18 Z" fill="#8A6E52"/><path d="M39 13 L48 8 L44 17 Z" fill="#8A6E52" stroke="#3B2B1E" stroke-width="1.5"/>`, "#C89B62", CUOI)},
   congai:{name:"Con gái phú ông", svg:S(`<path d="M17 18 Q30 4 43 18 Z" fill="#3B2B1E"/><circle cx="41" cy="9" r="4" fill="#DE7BA4" stroke="#3B2B1E" stroke-width="1.5"/>`, "#DE7BA4", CUOI)},
   chure:{name:"Công tử", svg:S(`<path d="M17 18 Q30 6 43 18 Z" fill="#1F3A5F"/><rect x="19" y="11" width="22" height="4.5" rx="2" fill="#1F3A5F"/>`, "#3A6EA5", MIM)},
-  dot1: {name:"Đốt tre", svg:`<svg viewBox="0 0 60 60"><rect x="22" y="8" width="16" height="44" rx="7" fill="#5A7D3C" stroke="#3B2B1E" stroke-width="2.5"/><path d="M22 20 h16 M22 32 h16 M22 44 h16" stroke="#3B2B1E" stroke-width="2"/><path d="M38 13 Q46 9 50 13 Q45 17 38 13" fill="#5A7D3C" stroke="#3B2B1E" stroke-width="2"/></svg>`},
+  /* Bộ ba đốt tre phân vai gốc/đốt/ngọn — thứ tự chuỗi tự hiện ra bằng mắt */
+  dot1: {name:"Gốc tre", svg:`<svg viewBox="0 0 60 60"><rect x="22" y="8" width="16" height="44" rx="7" fill="#5A7D3C" stroke="#3B2B1E" stroke-width="2.5"/><path d="M22 20 h16 M22 32 h16 M22 44 h16" stroke="#3B2B1E" stroke-width="2"/><path d="M24 52 Q18 55 14 54 M30 52 V58 M36 52 Q42 55 46 54" stroke="#8A6E52" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`},
   came: {name:"Cá mè",   svg:`<svg viewBox="0 0 60 60"><ellipse cx="28" cy="32" rx="14" ry="9" fill="#B8C4CC" stroke="#3B2B1E" stroke-width="2.5"/><path d="M42 32 L52 24 L52 40 Z" fill="#B8C4CC" stroke="#3B2B1E" stroke-width="2.5"/><circle cx="22" cy="30" r="1.6" fill="#3B2B1E"/><path d="M26 36 Q29 38 32 36" stroke="#3B2B1E" stroke-width="1.5" fill="none"/><path d="M12 24 Q16 20 20 24 M10 40 Q14 44 18 40" stroke="#F1F7F5" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`},
   chimdm:{name:"Chim đồi mồi",svg:`<svg viewBox="0 0 60 60"><ellipse cx="30" cy="36" rx="15" ry="11" fill="#8B5A2B" stroke="#3B2B1E" stroke-width="2.5"/><circle cx="41" cy="27" r="8" fill="#8B5A2B" stroke="#3B2B1E" stroke-width="2.5"/><circle cx="43.5" cy="25.5" r="1.5" fill="#3B2B1E"/><path d="M48 28 L55 26 L48 31 Z" fill="#E3A72F" stroke="#3B2B1E" stroke-width="2"/><path d="M22 33 Q14 28 16 40 Q22 42 26 38 Z" fill="#5C3A1E" stroke="#3B2B1E" stroke-width="2.5"/><circle cx="27" cy="34" r="2" fill="#5C3A1E"/><circle cx="34" cy="39" r="2" fill="#5C3A1E"/></svg>`},
   trau: {name:"Trâu",   svg:`<svg viewBox="0 0 60 60"><ellipse cx="33" cy="38" rx="18" ry="11" fill="#5C6670" stroke="#3B2B1E" stroke-width="2.5"/><circle cx="15" cy="30" r="8" fill="#5C6670" stroke="#3B2B1E" stroke-width="2.5"/><path d="M10 25 Q1 16 9 9" fill="none" stroke="#C9B27C" stroke-width="3.5" stroke-linecap="round"/><path d="M21 25 Q30 16 22 9" fill="none" stroke="#C9B27C" stroke-width="3.5" stroke-linecap="round"/><circle cx="13" cy="30" r="1.5" fill="#3B2B1E"/><path d="M11 35 q3 2 6 1" stroke="#3B2B1E" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M24 48 V53 M32 48 V53 M40 48 V53 M46 45 V52" stroke="#3B2B1E" stroke-width="2.5" stroke-linecap="round"/><path d="M50 33 Q57 37 53 45" stroke="#3B2B1E" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`},
-  dot2: {name:"Đốt tre", svg:null},   // gán bên dưới — dùng chung hình với dot1
-  dot3: {name:"Đốt tre", svg:null},
+  dot2: {name:"Đốt tre", svg:`<svg viewBox="0 0 60 60"><rect x="22" y="8" width="16" height="44" rx="7" fill="#5A7D3C" stroke="#3B2B1E" stroke-width="2.5"/><path d="M22 20 h16 M22 32 h16 M22 44 h16" stroke="#3B2B1E" stroke-width="2"/></svg>`},
+  dot3: {name:"Ngọn tre", svg:`<svg viewBox="0 0 60 60"><rect x="22" y="8" width="16" height="44" rx="7" fill="#5A7D3C" stroke="#3B2B1E" stroke-width="2.5"/><path d="M22 20 h16 M22 32 h16 M22 44 h16" stroke="#3B2B1E" stroke-width="2"/><path d="M38 12 Q46 8 50 12 Q45 16 38 12" fill="#5A7D3C" stroke="#3B2B1E" stroke-width="2"/><path d="M22 10 Q14 5 10 9 Q15 13 22 10" fill="#5A7D3C" stroke="#3B2B1E" stroke-width="2"/></svg>`},
   qthi: {name:"Quả thị",svg:`<svg viewBox="0 0 60 60"><circle cx="30" cy="34" r="16" fill="#E8912D" stroke="#3B2B1E" stroke-width="2.5"/><path d="M30 18 Q30 10 38 10" fill="none" stroke="#5A7D3C" stroke-width="3.5" stroke-linecap="round"/><path d="M30 14 Q22 8 16 14 Q22 20 30 14" fill="#5A7D3C" stroke="#3B2B1E" stroke-width="2"/><circle cx="25.5" cy="33" r="1.5" fill="#3B2B1E"/><circle cx="34.5" cy="33" r="1.5" fill="#3B2B1E"/><path d="M26 39 Q30 42 34 39" fill="none" stroke="#3B2B1E" stroke-width="2" stroke-linecap="round"/></svg>`},
 };
 
@@ -98,8 +99,7 @@ const ENVS = {
   vetchan:{name:"vết chân lạ", svg:`<svg viewBox="0 0 60 60"><path d="M22 46 Q13 36 17 23 Q21 13 30 13 Q39 13 43 23 Q47 36 38 46 Q30 52 22 46 Z" fill="#C0A87E" stroke="#3B2B1E" stroke-width="2.5"/><circle cx="21" cy="11" r="3.5" fill="#C0A87E" stroke="#3B2B1E" stroke-width="2"/><circle cx="30" cy="8" r="3.5" fill="#C0A87E" stroke="#3B2B1E" stroke-width="2"/><circle cx="39" cy="11" r="3.5" fill="#C0A87E" stroke="#3B2B1E" stroke-width="2"/></svg>`},
   noicom:{name:"nồi cơm làng", svg:`<svg viewBox="0 0 60 60"><ellipse cx="30" cy="38" rx="20" ry="13" fill="#5C6670" stroke="#3B2B1E" stroke-width="3"/><path d="M10 32 Q30 24 50 32" fill="none" stroke="#3B2B1E" stroke-width="2.5"/><path d="M18 26 Q21 16 30 14 Q39 16 42 26 Q30 31 18 26 Z" fill="#F7F1E0" stroke="#3B2B1E" stroke-width="2.5"/><path d="M26 10 Q28 6 26 2 M34 10 Q36 6 34 2" stroke="#9AA5A8" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`},
 };
-CHARS.dot2.svg = CHARS.dot1.svg;
-CHARS.dot3.svg = CHARS.dot1.svg;
+/* dot1/dot2/dot3 giờ mỗi vai một hình riêng (gốc/đốt/ngọn) — khai thẳng trong CHARS */
 CHARS.giac2.svg = CHARS.giac1.svg;
 CHARS.linh2 = {name:"Lính", svg:CHARS.linh.svg};
 CHARS.lang.svg = CHARS.tan.svg;   /* sinh đôi — giống nhau như hai giọt nước, đúng nghĩa đen */
@@ -192,7 +192,7 @@ const RELICS = {
     svg:`<svg viewBox="0 0 60 60"><path d="M14 34 Q14 18 30 14 Q46 18 46 34 Q38 30 30 34 Q22 30 14 34 Z" fill="#5A7D3C" stroke="#3B2B1E" stroke-width="2.5"/><path d="M22 38 Q30 34 38 38 Q36 48 30 50 Q24 48 22 38 Z" fill="#C8452A" stroke="#3B2B1E" stroke-width="2.5"/></svg>`},
 };
 RELICS.quatmo.svg = ENVS.mocau.svg;
-RELICS.dot100.svg = CHARS.dot1.svg;
+RELICS.dot100.svg = CHARS.dot3.svg;   /* đốt thứ 100 = đốt trên cùng = ngọn */
 
 /* ===== Chương 7 · Mai An Tiêm ===== */
 CHARS.antiem = {name:"Mai An Tiêm", svg:S(`<path d="M17 18 Q30 5 43 18 Z" fill="#2E4A62"/><path d="M40 12 L48 9 L45 16 Z" fill="#2E4A62" stroke="#3B2B1E" stroke-width="1.5"/>`, "#3E6257", CUOI)};
