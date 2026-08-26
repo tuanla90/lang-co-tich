@@ -433,6 +433,17 @@ function taoManHoiLang(opt){
   const vung = de.vung.map(cells => cells.map(hlDoi));
   /* mỗi mốc một hình RIÊNG — hai mốc cùng hình thì manh mối "cạnh cây đa" mơ hồ */
   const arts = opt.mocArts || [opt.mocArt || "cayda"];
+  /* mocTheoNguoi: mốc lấy từ CHÍNH TRUYỆN của nhân vật ấy — Sơn Tinh cạnh núi,
+     anh Khoai cạnh bụi tre, bà lão cạnh quán nước. Thiếu ai thì rơi về danh sách arts. */
+  const theo = opt.mocTheoNguoi || null;
+  const daDung = new Set();
+  const mocDs = de.moc.map((m,i) => {
+    const c = opt.chars[m.nguoi];
+    let a = (theo && theo[c]) || arts[i % arts.length];
+    if(daDung.has(a)) a = arts.find(x => !daDung.has(x)) || a;
+    daDung.add(a);
+    return { c, o: hlDoi(m.o), art: a };
+  });
   return {
     type: "hoilang",
     name: opt.name || "Hội làng",
@@ -442,7 +453,7 @@ function taoManHoiLang(opt){
     story: opt.story || "",
     vung,                                            // vung[i] = ô của chars[i]
     tenVung: opt.tenVung || de.vung.map((_,i)=>"Vùng "+(i+1)),
-    moc: de.moc.map((m,i) => ({ c: opt.chars[m.nguoi], o: hlDoi(m.o), art: arts[i % arts.length] })),
+    moc: mocDs,
     datTuDo: !!opt.datTuDo,            // true: đặt đâu cũng được — luật vùng tự CHẤM thay vì chặn
     vatCan: de.vatCan.map(hlDoi),
     mocArt: opt.mocArt || "cayda",

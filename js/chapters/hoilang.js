@@ -7,12 +7,14 @@ window.CHAPTERS = window.CHAPTERS || [];
 
 /* Sáu nhân vật, mỗi người một địa danh của riêng mình */
 const HL_KHACH = [
-  { c:"tam",     vung:"Làng của Tấm"    },
-  { c:"sontinh", vung:"Núi Tản Viên"    },
-  { c:"bom",     vung:"Bãi chăn trâu"   },
-  { c:"khoai",   vung:"Rừng tre"        },
-  { c:"giongts", vung:"Làng Phù Đổng"   },
-  { c:"tan",     vung:"Bến sông"        },
+  /* moc = vật làm mốc, lấy từ CHÍNH truyện của nhân vật ấy.
+     Mỗi người một hình khác nhau — hai mốc trùng hình thì manh mối hoá mơ hồ. */
+  { c:"tam",     vung:"Làng của Tấm",  moc:"gieng"  },  // giếng nuôi cá Bống
+  { c:"sontinh", vung:"Núi Tản Viên",  moc:"nui"    },  // núi Tản, chứ không phải cây đa!
+  { c:"bom",     vung:"Bãi chăn trâu", moc:"mocau"  },  // chiếc quạt mo bất ly thân
+  { c:"khoai",   vung:"Rừng tre",      moc:"tre"    },  // bụi tre trăm đốt
+  { c:"giongts", vung:"Làng Phù Đổng", moc:"noicom" },  // nồi cơm cả làng góp
+  { c:"tan",     vung:"Bến sông",      moc:"caycau" },  // cây cau — chính chàng hoá thành
 ];
 
 /* Ba bậc — tham số đã đo và chốt ở engine sinh đề */
@@ -37,7 +39,7 @@ const HL_BAC = [
       tenVung: HL_KHACH.map(k => k.vung),
       co: b.co, soMoc: b.soMoc, soVatCan: b.soVatCan, omHet: b.omHet,
       doKho: b.doKho, seed: b.seed,
-      mocArt: "cayda",          // mốc: cây đa đầu làng
+      mocTheoNguoi: Object.fromEntries(HL_KHACH.map(k => [k.c, k.moc])),
       canArt: "ao",             // vật cản: vũng nước — hôm nay Thuỷ Tinh không dự hội
       story: "Ai cũng có chỗ đứng của mình. Hội làng đông mà chẳng ai phải chen ai."
     });

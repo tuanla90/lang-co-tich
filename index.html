@@ -28,6 +28,9 @@
   <div class="dots" id="dots"></div>
 </header>
 
+<!-- Dải báo tin (nhặt di vật…) — tự ẩn sau vài giây -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <div class="game">
   <aside class="panel">
     <div class="scene" id="scene"></div>
@@ -61,8 +64,17 @@
   <div class="win bag">
     <h2 id="bagTitle">Túi đồ</h2>
     <div class="bag-grid" id="bagGrid"></div>
+    <button class="btn" id="parentBtn">👪 Góc cha mẹ</button>
     <button class="btn" id="resetSave">Chơi lại từ đầu</button>
     <button class="btn primary" id="bagClose">Đóng</button>
+  </div>
+</div>
+
+<div class="veil" id="parentVeil">
+  <div class="win parent">
+    <h2>👪 Góc cha mẹ</h2>
+    <div id="parentBody"></div>
+    <button class="btn primary" id="parentClose">Đóng</button>
   </div>
 </div>
 
@@ -79,6 +91,7 @@
 <script src="js/chapters/chapter7.js"></script>
 <script src="js/chapters/chapter8.js"></script>
 <script src="js/chapters/hoilang.js"></script>
+<script src="js/skills.js"></script>
 <script src="js/engine.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/main.js"></script>

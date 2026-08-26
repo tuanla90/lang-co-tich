@@ -14,13 +14,10 @@ Mục tiêu: một đứa trẻ 6–9 tuổi cầm máy tự chơi 15 phút khô
 
 1. ~~**Màn hình mở đầu**~~ ✅ (4da7bc3) — logo, parade nhân vật, Chơi tiếp / Chơi lại.
 2. ~~**Hướng dẫn chạm lần đầu**~~ ✅ (4da7bc3) — bàn tay 👆 khay → ô đích, chỉ màn 1 chưa save.
-3. **Bộ ghi lượt chơi (telemetry cục bộ)** ⚠ PHẢI XONG TRƯỚC PHÉP THỬ A — buổi test
-   đầu tiên chính là dữ liệu quý nhất, không được để trôi mất. Chi tiết ở mục C2.
-4. **Gắn nhãn `skills` + `tier` cho 71 màn** — schema ở mục C2. Làm một lượt, màn mới
-   sau này gắn ngay lúc viết.
-5. **Đổi lời khen sang khen quá trình** (Dweck) — "Giỏi quá!" là khen tư chất, dùng
-   nhiều tạo tâm lý sợ sai. Thay bằng mảng xoay vòng khen quá trình: "Tìm ra cách rồi!",
-   "Nghĩ mãi mới ra chứ đùa à!", "Con tự sửa được rồi đấy!". 30 phút, ăn ngay.
+3. ~~**Bộ ghi lượt chơi (telemetry cục bộ)**~~ ✅ (571602e) — lct_log + nút 💡 chỉ sáng khi bí.
+4. ~~**Gắn nhãn `skills` + `tier`**~~ ✅ — js/skills.js: heuristic theo loại màn + 31 override
+   tay; mọi màn (kể cả sinh máy, kể cả thêm sau) luôn có nhãn mặc định hợp lý.
+5. ~~**Đổi lời khen sang khen quá trình**~~ ✅ — mảng PRAISE 7 câu xoay vòng, hết "Giỏi quá!".
 6. **Tem truyện** — xong mỗi chương tặng 1 tem Đông Hồ vào Túi đồ (ngăn thứ hai).
 7. **Hoàn thiện Hội làng** (hoilang.js — đang làm dở).
 8. **Polish nhỏ**: hiệu ứng thắng, transition chuyển màn, viền bàn ấm lên khi gần xong.
@@ -82,10 +79,11 @@ tier: 2                           // 1 làm quen · 2 vận dụng · 3 thử th
 - Tier KHÔNG chấm tay chay: audit.js đo độ chặt + số ràng buộc + luật mới → gợi ý,
   người duyệt lại. Trọng số ×tier chỉ dùng nội bộ, không bao giờ hiển thị.
 
-### C2.3 Màn hình phụ huynh
+### C2.3 Màn hình phụ huynh — ✅ bản 1 đã chạy
 
-Vào từ Túi đồ (góc riêng, bé không lạc vào). Mỗi kỹ năng một dòng chữ:
-"Bé mạnh suy luận, đang tập ghi nhớ" + màn gần đây + xu hướng. Không biểu đồ điểm.
+"👪 Góc cha mẹ" trong Túi đồ: 5 dòng kỹ năng mức bằng lời (· / ● / ●● / ●●●),
+hint được khen là thói quen tốt, mục "gợi ý cùng chơi" nêu màn bé đang vướng,
+disclaimer "quan sát, không phải chẩn đoán". Bản sau: xu hướng theo tuần khi đủ dữ liệu.
 
 ---
 

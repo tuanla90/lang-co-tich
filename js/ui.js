@@ -5,6 +5,18 @@
 const $ = id => document.getElementById(id);
 const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
 
+/* Dải báo tin: đứng đủ lâu để đọc, không bị hover hay render sau đó xoá mất.
+   (Thanh nameplate cũ bị onmouseleave dọn ngay, trên điện thoại thì gần như không kịp thấy.) */
+let _toastTimer = null;
+function khoe(html, giay = 4){
+  const t = $("toast"); if(!t) return;
+  t.innerHTML = html;
+  t.classList.add("show");
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(()=>t.classList.remove("show"), giay*1000);
+  t.onclick = ()=>{ t.classList.remove("show"); clearTimeout(_toastTimer); };
+}
+
 let _prevRes = [], _prevResLv = null;   // theo dõi CHUYỂN đỏ theo từng chip (kêu "sai" + telemetry A3)
 
 function render(){
@@ -614,7 +626,10 @@ function tapCell(x,y){
     const r = relicAt(x,y);
     if(!r || held || ch) return false;
     collectRelic(r.id); sfx("ding"); render();
-    $("nameplate").innerHTML=`✨ Nhặt được: <b>${RELICS[r.id].name}</b> — <i>${RELICS[r.id].lore}</i>`;
+    const d = RELICS[r.id] || {name:"Một vật lạ", lore:"chưa rõ là gì…", svg:""};
+    khoe(`<span class="toast-ic">${d.svg||""}</span>`
+       + `<span><b>✨ Nhặt được: ${d.name}</b><i>${d.lore}</i></span>`
+       + `<span class="toast-tui">đã cất vào 🧺 Túi đồ</span>`);
     return true;
   };
   if(e){
@@ -641,4 +656,62 @@ function renderBag(){
       : `<div class="bag-item unknown"><div class="qmark">?</div><b>???</b><span>còn giấu đâu đó trong truyện…</span></div>`;
   }).join("");
   $("bagTitle").textContent = `Túi đồ — ${relicsGot.length}/${ids.length} di vật`;
+}
+
+/* ============================================================
+   C2: GÓC CHA MẸ — tổng hợp lct_log theo 5 kỹ năng.
+   Nguyên tắc đã chốt: mô tả BẰNG LỜI, không chấm điểm số;
+   chỉ so bé với chính bé; gợi ý bấm 💡 là thói quen TỐT.
+   ============================================================ */
+function skillStats(){
+  let log=[]; try{ log=JSON.parse(localStorage.getItem("lct_log")||"[]"); }catch(e){}
+  const byId={}; LEVELS.forEach(l=>byId[l.id]=l);
+  const st={};
+  for(const k in SKILL_NAMES) st[k]={played:0,finished:0,clean:0,hintTaps:0,struggle:0};
+  const vuong=[];   // các màn gần đây bé đang vướng — để bố mẹ ngồi cùng
+  for(const r of log){
+    const lv=byId[r.levelId]; if(!lv||!lv.skills) continue;
+    lv.skills.forEach((sk,idx)=>{
+      const s=st[sk]; if(!s) return;
+      const w = idx===0 ? 1 : 0.5;              // nhãn chính đủ, nhãn phụ nửa
+      s.played+=w;
+      if(r.finished) s.finished+=w;
+      if(r.clean && (lv.tier||2)>=2) s.clean+=w; // "sạch" chỉ tính từ màn vận dụng trở lên
+      s.hintTaps+=r.hintTaps||0;
+      if(!r.finished || r.redMaxRepeat>=3 || r.resets>=2) s.struggle+=w;
+    });
+    if(!r.finished || r.redMaxRepeat>=3) vuong.push(lv);
+  }
+  return {st, log, vuong};
+}
+
+function mucKyNang(s){
+  if(s.played===0)   return ["·","Chưa chạm tới — còn ở phía trước."];
+  if(s.clean>=2)     return ["●●●","Vững — tự giải sạch được cả màn khó."];
+  if(s.finished>=3)  return ["●●","Đang tiến bộ — làm được đều tay."];
+  return ["●","Đang làm quen — cần thêm thời gian chơi."];
+}
+
+function renderParent(){
+  const {st, log, vuong} = skillStats();
+  const tongHint = log.reduce((n,r)=>n+(r.hintTaps||0),0);
+  let html = `<p class="p-intro">Ghi nhận từ <b>${log.length}</b> lượt chơi gần đây, ngay trên máy này —
+    không gửi đi đâu cả.</p>`;
+  html += Object.keys(SKILL_NAMES).map(k=>{
+    const [dot,loi]=mucKyNang(st[k]);
+    return `<div class="p-row"><b class="p-dot">${dot}</b>
+      <span class="p-name">${SKILL_NAMES[k]}</span>
+      <span class="p-loi">${loi}</span></div>`;
+  }).join("");
+  if(tongHint>0)
+    html += `<p class="p-note">✦ Bé đã tự bấm 💡 xin gợi ý <b>${tongHint}</b> lần —
+      biết tìm trợ giúp đúng lúc là một thói quen tốt, không phải điểm trừ.</p>`;
+  const gan=[...new Map(vuong.slice(-6).map(l=>[l.id,l])).values()].slice(-3);
+  if(gan.length)
+    html += `<p class="p-note">🤝 Gợi ý cùng chơi: bé đang vướng ở
+      ${gan.map(l=>`<b>${l.name}</b>`).join(", ")} — thử ngồi cạnh, để bé tự làm,
+      chỉ hỏi “con định đặt ai trước?”.</p>`;
+  html += `<p class="p-disclaimer">Đây là quan sát khi chơi — không phải bài kiểm tra
+    hay chẩn đoán. Mỗi bé một nhịp; chỉ so bé với chính bé tuần trước.</p>`;
+  $("parentBody").innerHTML=html;
 }

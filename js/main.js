@@ -15,9 +15,22 @@ LEVELS = CHAPTERS.flatMap(c => c.levels.map(l => {
   l.id = l.id || `c${c.id}:${l.name}`;
   return l;
 }));
+apDungNhan(LEVELS);   // gắn nhãn kỹ năng + tier cho mọi màn (skills.js)
 
 /* "Chương 1 · Tấm Cám" → "chương 1" */
 const chShort = name => name.split("·")[0].trim().toLowerCase();
+
+/* Lời khen QUÁ TRÌNH (Dweck) — khen cách làm, không khen tư chất.
+   "Giỏi quá!" là khen tư chất: dùng nhiều tạo tâm lý sợ sai. */
+const PRAISE = [
+  "Tìm ra cách rồi!",
+  "Nghĩ mãi mới ra chứ đùa à!",
+  "Con tự sửa được rồi đấy!",
+  "Cách xếp này hay đấy!",
+  "Từng bước một là ra ngay!",
+  "Chịu khó thử là thấy liền!",
+  "Lần này xếp khéo ghê!",
+];
 
 function win(){
   if($("veil").classList.contains("show")) return;
@@ -27,7 +40,8 @@ function win(){
   if(window.SFX) SFX.play("dung");
   const nxt = LEVELS[cur+1];
   const endOfChapter = !nxt || nxt._ch !== L()._ch;
-  $("winTitle").textContent = endOfChapter ? `Hết ${chShort(L()._ch)}!` : "Giỏi quá!";
+  $("winTitle").textContent = endOfChapter ? `Hết ${chShort(L()._ch)}!`
+    : PRAISE[Math.floor(Math.random()*PRAISE.length)];
   $("winStory").innerHTML = L().story;
   $("nextBtn").style.display = nxt ? "" : "none";
   $("nextBtn").textContent = (nxt && endOfChapter) ? `Sang ${chShort(nxt._ch)} ▶` : "Màn tiếp theo";
@@ -53,6 +67,8 @@ $("reset").onclick=()=>load(cur);
 $("hintBtn").onclick=()=>giveHint();
 $("bagBtn").onclick=()=>{ renderBag(); $("bagVeil").classList.add("show"); };
 $("bagClose").onclick=()=>$("bagVeil").classList.remove("show");
+$("parentBtn").onclick=()=>{ renderParent(); $("bagVeil").classList.remove("show"); $("parentVeil").classList.add("show"); };
+$("parentClose").onclick=()=>$("parentVeil").classList.remove("show");
 $("resetSave").onclick=()=>{
   if(!confirm("Chơi lại từ đầu? (Túi đồ vẫn giữ nguyên)")) return;
   try{ localStorage.removeItem("lct_save"); }catch(e){}
