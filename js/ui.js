@@ -52,6 +52,10 @@ function render(){
   /* Nút 💡 bình thường đứng nép; chỉ sáng gọi mời khi bé đang bí thật sự */
   $("hintBtn").classList.toggle("glow", attStruggling());
 
+  /* A8: gần xong (≥3/4 xanh) — viền bàn ấm lên như đèn sắp hội */
+  const okN = res.filter(r=>r===true).length;
+  $("stagebox").classList.toggle("almost", res.length>0 && okN/res.length>=0.75 && !isWon(res));
+
   if(lv.type==="matrix") renderMatrix(lv);
   else if(lv.type==="hoilang") renderHoiLang(lv);
   else if(lv.type==="story") renderStory(lv);
@@ -89,6 +93,7 @@ function renderNav(lv){
         <b>${title}</b><span class="ch-prog">${doneCount===total?'✓ xong':doneCount+'/'+total}</span></button>`;
     }).join("")+`</div><div class="dots-inner">`
     +(curSpan?curSpan.c.levels.map((l,j)=>{ const i=curSpan.start+j;
+      if(l.voTan) return "";   // đề vô tận không nằm trong mạch chương
       return `<button class="dot ${l.type==='matrix'?'mtx':''} ${l.type==='story'?'sty':''} ${i===cur?'cur':done.includes(i)?'done':''}" data-i="${i}" aria-label="Màn ${i+1}: ${l.name}"></button>`;
     }).join(""):"")+`</div>`;
 
@@ -746,4 +751,28 @@ function stampHtml(s){
     <div class="stamp-in">${s.got ? s.svg : '<div class="qmark">?</div>'}
       <b>${s.got ? s.title : "???"}</b>
       <span>LÀNG CỔ TÍCH · 1 xu</span></div></div>`;
+}
+
+/* ============================================================
+   A8: HIỆU ỨNG THẮNG — lá tre + cánh đào rơi. CSS thuần, tự dọn.
+   ============================================================ */
+function fxWin(){
+  try{ if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; }catch(e){}
+  let fx=$("fx");
+  if(!fx){ fx=document.createElement("div"); fx.id="fx"; document.body.appendChild(fx); }
+  const mau=["#5A7D3C","#DE7BA4","#E3A72F","#C8452A","#7FA88F"];
+  for(let i=0;i<20;i++){
+    const p=document.createElement("span");
+    p.className="fx-p";
+    p.style.left=(4+Math.random()*92)+"vw";
+    p.style.background=mau[i%mau.length];
+    if(i%4===1){ p.style.width="9px"; p.style.height="9px"; p.style.borderRadius="50%"; } // cánh đào
+    p.style.animationDelay=(Math.random()*.4)+"s";
+    p.style.animationDuration=(1.6+Math.random()*1.3)+"s";
+    p.style.setProperty("--drift",(Math.random()*90-45)+"px");
+    p.style.setProperty("--spin",(Math.random()*720-360)+"deg");
+    p.addEventListener("animationend",()=>p.remove());
+    setTimeout(()=>p.remove(), 4500);   // tab nền hoãn animation → animationend không nổ; dọn kiểu gì cũng sạch
+    fx.appendChild(p);
+  }
 }

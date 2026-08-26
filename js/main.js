@@ -34,10 +34,13 @@ const PRAISE = [
 
 function win(){
   if($("veil").classList.contains("show")) return;
-  if(!done.includes(cur)) done.push(cur);
+  /* Đề vô tận: giải bao nhiêu lần cũng được, KHÔNG ghi vào tiến độ mạch truyện */
+  if(!L().voTan && !done.includes(cur)) done.push(cur);
+  if(L().voTan) hlDemThemMotDe();
   attFinish(true);
   saveProgress();
   if(window.SFX) SFX.play("dung");
+  fxWin();   // A8: lá tre + cánh đào rơi mừng thắng
   const nxt = LEVELS[cur+1];
   const endOfChapter = !nxt || nxt._ch !== L()._ch;
   $("winTitle").textContent = endOfChapter ? `Hết ${chShort(L()._ch)}!`
@@ -55,8 +58,14 @@ function win(){
   }
   $("stampAward").innerHTML = award;
   $("winStory").innerHTML = L().story;
-  $("nextBtn").style.display = nxt ? "" : "none";
-  $("nextBtn").textContent = (nxt && endOfChapter) ? `Sang ${chShort(nxt._ch)} ▶` : "Màn tiếp theo";
+  if(L().voTan){
+    $("winTitle").textContent = PRAISE[Math.floor(Math.random()*PRAISE.length)];
+    $("nextBtn").style.display = "";
+    $("nextBtn").textContent = `🎲 Đề mới (đã giải ${hlSoDeDaGiai()})`;
+  } else {
+    $("nextBtn").style.display = nxt ? "" : "none";
+    $("nextBtn").textContent = (nxt && endOfChapter) ? `Sang ${chShort(nxt._ch)} ▶` : "Màn tiếp theo";
+  }
   $("veil").classList.add("show");
 }
 
@@ -72,6 +81,9 @@ function load(i){
   else if(lv.type==="story") lv.panels.forEach((p,j)=>sAssign[j]=null);
   else for(const r of lv.rows) mAssign[r]=null;
   $("veil").classList.remove("show"); render();
+  /* A8: bàn mới trượt nhẹ lên */
+  const sb=$("stagebox");
+  sb.classList.remove("lv-enter"); void sb.offsetWidth; sb.classList.add("lv-enter");
   saveProgress();
 }
 
@@ -87,7 +99,10 @@ $("resetSave").onclick=()=>{
   done=[]; $("bagVeil").classList.remove("show"); load(0);
 };
 $("againBtn").onclick=()=>load(cur);
-$("nextBtn").onclick=()=>load(cur+1);
+$("nextBtn").onclick=()=>{
+  if(L().voTan){ const i=deMoiHoiLang(L().doKhoChon||"vừa"); if(i>=0) load(i); return; }
+  load(cur+1);
+};
 function sndIcon(){ $("sndBtn").textContent = SFX.on ? "🔉" : "🔇"; }
 $("sndBtn").onclick=()=>{ SFX.toggle(); if(SFX.on) SFX.play("cham"); sndIcon(); };
 sndIcon();
@@ -110,14 +125,32 @@ $("startBtn").onclick = ()=>{           // cú chạm đầu tiên cũng "mở k
 };
 /* Hội làng: chế độ phụ, vào thẳng được từ màn mở đầu, không cần mở khoá chương */
 /* trỏ đích danh chương 99 — các màn hoilang chèn giữa mạch truyện (chợ Tết) không cướp nút này */
-const ch99 = CHAPTERS.find(c => c.id === 99);
-const iHoi = ch99 ? LEVELS.indexOf(ch99.levels[0]) : -1;
+const iHoi = LEVELS.findIndex(l => l.voTan);
 if(iHoi < 0) $("hoiBtn").style.display = "none";
-else $("hoiBtn").onclick = ()=>{
-  $("titleVeil").classList.remove("show");
-  if(window.SFX) SFX.play("pop");
-  load(iHoi);
-};
+else {
+  $("hlParade").innerHTML = HL_KHACH.slice(0,4).map(k => CHARS[k.c].svg).join("");
+  const moHoiLang = ()=>{
+    $("hlDem").textContent = hlSoDeDaGiai()
+      ? `Đã giải ${hlSoDeDaGiai()} đề` : "Chưa giải đề nào — bắt đầu thôi!";
+    /* Ẩn hẳn màn mở đầu: đây là MÀN KHÁC, không phải lớp phủ chồng lên.
+       (Để cả hai cùng hiện thì #titleVeil z-index 20 sẽ che mất màn này.) */
+    $("titleVeil").classList.remove("show");
+    $("hlVeil").classList.add("show");
+  };
+  $("hoiBtn").onclick = ()=>{ if(window.SFX) SFX.play("pop"); moHoiLang(); };
+  $("hlDong").onclick = ()=>{
+    $("hlVeil").classList.remove("show");
+    $("titleVeil").classList.add("show");
+  };
+  document.querySelectorAll(".hl-pick").forEach(b => b.onclick = ()=>{
+    const i = deMoiHoiLang(b.dataset.kho);
+    if(i < 0) return;
+    $("hlVeil").classList.remove("show");
+    $("titleVeil").classList.remove("show");
+    if(window.SFX) SFX.play("pop");
+    load(i);
+  });
+}
 
 $("startOver").onclick = ()=>{
   if(!confirm("Chơi lại từ đầu? (Túi đồ vẫn giữ nguyên)")) return;

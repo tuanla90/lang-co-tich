@@ -20,7 +20,7 @@ Mục tiêu: một đứa trẻ 6–9 tuổi cầm máy tự chơi 15 phút khô
 5. ~~**Đổi lời khen sang khen quá trình**~~ ✅ — mảng PRAISE 7 câu xoay vòng, hết "Giỏi quá!".
 6. ~~**Tem truyện**~~ ✅ — tem suy ra từ save (xong trọn chương), trao trong hộp thắng, trưng ngăn hai Túi đồ; hội làng không tem.
 7. **Hoàn thiện Hội làng** (hoilang.js — đang làm dở).
-8. **Polish nhỏ**: hiệu ứng thắng, transition chuyển màn, viền bàn ấm lên khi gần xong.
+8. ~~**Polish nhỏ**~~ ✅ — lá tre + cánh đào rơi khi thắng, bàn mới trượt lên, viền ấm ≥3/4 xanh, hộp thắng nảy, nút có phản hồi ấn.
 9. **QA thiết bị thật**: Android tầm trung, tablet — kích thước ô bấm với ngón tay trẻ.
 
 **Phép thử A**: 2–3 trẻ chơi, người lớn chỉ quan sát + ghi chú; telemetry ghi song song.

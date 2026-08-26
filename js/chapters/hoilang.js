@@ -17,6 +17,18 @@ const HL_KHACH = [
   { c:"tan",     vung:"Bến sông",      moc:"caycau" },  // cây cau — chính chàng hoá thành
 ];
 
+/* Tham số ba bậc — đã đo và chốt ở engine sinh đề */
+const HL_CAUHINH = {
+  "dễ":  { co:[4,4,4,4,4,4], soMoc:1, soVatCan:4, omHet:false, doKho:"dễ"  },
+  "vừa": { co:[4,4,4,4,4,5], soMoc:1, soVatCan:3, omHet:true,  doKho:"vừa" },
+  "khó": { co:[4,4,4,4,4,5], soMoc:1, soVatCan:3, omHet:true,  doKho:"khó" },
+};
+const HL_SCENE = {
+  "dễ":  "Hội làng mở rồi! <b>Mỗi hàng một người, mỗi cột một người, ai cũng cần một khoảng trống quanh mình</b> — chen sát quá thì còn xem đám rước sao được.",
+  "vừa": "Sân hội hôm nay rộng hơn, có chỗ lầy nước không đứng được. Vẫn luật cũ: <b>mỗi hàng một người, mỗi cột một người, không ai đứng sát ai</b>.",
+  "khó": "Bậc khó đây. Đừng đoán — cứ lần từng manh mối một, kiểu gì cũng ra. <b>Mỗi hàng một người, mỗi cột một người, không ai đứng sát ai.</b>",
+};
+
 /* Ba bậc — tham số đã đo và chốt ở engine sinh đề */
 const HL_BAC = [
   { ten:"Hội làng · dễ",  doKho:"dễ",
@@ -45,6 +57,50 @@ const HL_BAC = [
     });
     if(man) levels.push(man);
   }
+  /* ===== CHẾ ĐỘ VÔ TẬN =====
+     Một ô đề DUY NHẤT nằm cuối chương, được thay đề TẠI CHỖ mỗi lần bấm "Đề mới".
+     Giữ nguyên một slot trong LEVELS nên toàn bộ engine/UI dùng lại được y nguyên;
+     cờ voTan để nav ẩn nó đi và hộp thắng đổi nút thành "Đề mới". */
+  const oVoTan = taoManHoiLang({
+    name: "Hội làng vô tận", chars: HL_KHACH.map(k => k.c),
+    tenVung: HL_KHACH.map(k => k.vung),
+    mocTheoNguoi: Object.fromEntries(HL_KHACH.map(k => [k.c, k.moc])),
+    canArt: "ao", ...HL_CAUHINH["vừa"], seed: 20260010,
+    scene: HL_SCENE["vừa"], story: "Giải xong một đề, hội lại dọn ra đề mới!"
+  });
+  if(oVoTan){ oVoTan.voTan = true; levels.push(oVoTan); }
+
   if(levels.length)
     CHAPTERS.push({ id: 99, name: "Chương · Hội làng", title: "Hội làng", levels });
 })();
+
+/* Tham số ba bậc — dùng chung cho cả màn cố định lẫn chế độ vô tận */
+function HL_THAMSO(){ return HL_CAUHINH; }
+
+/* Thay đề tại chỗ. Trả về chỉ số màn vô tận, hoặc -1 nếu chưa sinh được. */
+function deMoiHoiLang(doKho){
+  const i = LEVELS.findIndex(l => l.voTan);
+  if(i < 0) return -1;
+  const c = HL_CAUHINH[doKho] || HL_CAUHINH["vừa"];
+  let man = null;
+  for(let thu = 0; thu < 40 && !man; thu++){           // vài hạt giống lỡ không ra đề đạt chuẩn
+    man = taoManHoiLang({
+      name: "Hội làng vô tận · " + doKho,
+      chars: HL_KHACH.map(k => k.c), tenVung: HL_KHACH.map(k => k.vung),
+      mocTheoNguoi: Object.fromEntries(HL_KHACH.map(k => [k.c, k.moc])),
+      canArt: "ao", ...c,
+      seed: (Math.random() * 2e9) | 0,
+      scene: HL_SCENE[doKho] || HL_SCENE["vừa"],
+      story: "Giải xong một đề, hội lại dọn ra đề mới!"
+    });
+  }
+  if(!man) return -1;
+  const giu = { id: LEVELS[i].id, _ch: LEVELS[i]._ch, voTan: true, doKhoChon: doKho };
+  Object.keys(LEVELS[i]).forEach(k => delete LEVELS[i][k]);
+  Object.assign(LEVELS[i], man, giu);
+  return i;
+}
+
+/* Đếm số đề đã giải ở chế độ vô tận */
+function hlSoDeDaGiai(){ try{ return +(localStorage.getItem("lct_hl_dem")||0); }catch(e){ return 0; } }
+function hlDemThemMotDe(){ try{ localStorage.setItem("lct_hl_dem", hlSoDeDaGiai()+1); }catch(e){} }

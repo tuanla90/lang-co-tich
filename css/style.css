@@ -350,3 +350,42 @@ h1 .tilde{color:var(--la)}
 @keyframes stampIn{0%{transform:scale(1.6) rotate(var(--rot,0deg));opacity:0}
   100%{transform:scale(1) rotate(var(--rot,0deg));opacity:1}}
 @media (prefers-reduced-motion:reduce){.stamp-award .stamp{animation:none}}
+
+/* ===== Hội làng: màn chọn bậc ===== */
+.hl-card{max-width:400px}
+.hl-luat{font-size:13.5px;line-height:1.6;color:#6B5232;text-align:center;margin:-2px 0 4px}
+.hl-bac{display:flex;gap:9px;justify-content:center;margin-top:6px}
+.hl-pick{font-size:16px;padding:11px 24px}
+.hl-dem{font-size:12.5px;color:var(--la);font-weight:600;margin-top:2px}
+/* Màn chọn bậc phải nổi trên màn mở đầu (#titleVeil dùng z-index 20) */
+#hlVeil{z-index:21}
+
+/* ===== A8: Polish — hiệu ứng thắng, chuyển màn, bàn ấm dần ===== */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:30;overflow:hidden}
+.fx-p{position:absolute;top:-4vh;width:13px;height:7px;border-radius:60% 40% 60% 40%;
+  opacity:.95;animation:fxFall linear forwards}
+@keyframes fxFall{
+  0%{transform:translate(0,0) rotate(0deg)}
+  100%{transform:translate(var(--drift,0),108vh) rotate(var(--spin,360deg));opacity:.65}}
+
+/* chuyển màn: bàn mới trượt nhẹ lên */
+.lv-enter{animation:lvIn .35s ease-out}
+@keyframes lvIn{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:none}}
+
+/* gần xong (≥3/4 chip xanh): viền bàn ấm dần như đèn sắp hội */
+.board,.mgrid{transition:border-color .5s, box-shadow .5s}
+#stagebox.almost .board, #stagebox.almost .mgrid{
+  border-color:var(--hoe);
+  box-shadow:0 0 0 3px rgba(227,167,47,.30), 0 0 22px rgba(227,167,47,.45)}
+
+/* hộp thắng nảy nhẹ khi hiện; nút có phản hồi khi ấn */
+.veil.show .win{animation:winPop .28s ease-out}
+@keyframes winPop{0%{transform:scale(.86);opacity:.4}100%{transform:scale(1);opacity:1}}
+.btn:active{transform:scale(.95)}
+.tray-slot:not(.placed):hover{transform:translateY(-2px)}
+.tray-slot{transition:transform .15s}
+
+@media (prefers-reduced-motion:reduce){
+  .lv-enter,.veil.show .win{animation:none}
+  .fx-p{display:none}
+}
