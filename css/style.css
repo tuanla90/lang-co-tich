@@ -389,3 +389,32 @@ h1 .tilde{color:var(--la)}
   .lv-enter,.veil.show .win{animation:none}
   .fx-p{display:none}
 }
+
+/* ============================================================
+   Polish popup + thanh cuộn
+   ============================================================ */
+
+/* Thanh cuộn "thân tre" — mảnh, bo tròn, nổi trên mọi nền */
+*{scrollbar-width:thin;scrollbar-color:#B99A63 transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#C9A46A;border-radius:999px;
+  border:3px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background-color:var(--bun)}
+::-webkit-scrollbar-corner{background:transparent}
+
+/* Nền mờ hiện êm khi mở popup */
+.veil.show{animation:veilIn .18s ease-out}
+@keyframes veilIn{0%{opacity:0}100%{opacity:1}}
+
+/* Popup 3 tầng: đầu ghim — giữa cuộn — nút ghim đáy. Không bao giờ tràn màn hình. */
+.win{display:flex;flex-direction:column;max-height:min(88vh,720px);
+  box-shadow:0 14px 34px rgba(59,43,30,.35)}
+.win > *{flex:none}
+#bagGrid,#parentBody,#winStory{flex:0 1 auto;min-height:0;overflow-y:auto;
+  overscroll-behavior:contain;padding-right:4px}
+.bag-grid{max-height:none}                     /* chiều cao giờ do .win chia tầng */
+.modal-foot{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding-top:12px}
+.win .modal-foot .btn{margin:0}
+
+@media (prefers-reduced-motion:reduce){.veil.show{animation:none}}
