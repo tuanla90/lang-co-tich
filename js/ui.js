@@ -609,21 +609,26 @@ function tapCell(x,y){
   const em=envCellMap(), e=em[key(x,y)];
   const ch=charAt(x,y);
   const sfx = n => { if(window.SFX) SFX.play(n); };
+  /* Di vật có thể nấp TRONG cảnh vật (bụi tre, tảng đá…) — chạm là nhặt, ưu tiên trước hiện-tên */
+  const nhatDiVat = () => {
+    const r = relicAt(x,y);
+    if(!r || held || ch) return false;
+    collectRelic(r.id); sfx("ding"); render();
+    $("nameplate").innerHTML=`✨ Nhặt được: <b>${RELICS[r.id].name}</b> — <i>${RELICS[r.id].lore}</i>`;
+    return true;
+  };
   if(e){
     if(ch && !held){ held=ch; place[ch]=null; sfx("cham"); render(); return; }  // nhấc người đang trèo/nấp
     if(held && canOccupy(held,e) && !ch){ place[held]=[x,y]; held=null; sfx("pop"); render(); return; } // trèo/nấp
+    if(nhatDiVat()) return;
     showName(x,y); return;
   }
-  if(isBlocked(x,y)||extraAt(x,y)){ showName(x,y); return; }
+  if(isBlocked(x,y)||extraAt(x,y)){ if(nhatDiVat()) return; showName(x,y); return; }
   if(held){
     if(ch){ held=ch; sfx("cham"); render(); return; }
     place[held]=[x,y]; held=null; sfx("pop"); render();
   } else if(ch){ held=ch; place[ch]=null; sfx("cham"); render(); }
-  else {
-    const r=relicAt(x,y);
-    if(r){ collectRelic(r.id); sfx("ding"); render();
-      $("nameplate").innerHTML=`✨ Nhặt được: <b>${RELICS[r.id].name}</b> — <i>${RELICS[r.id].lore}</i>`; }
-  }
+  else nhatDiVat();
 }
 
 /* ===== Túi đồ — bộ sưu tập di vật ===== */
