@@ -390,7 +390,9 @@ function renderBoard(lv){
   const em=envCellMap();
   const wide = window.innerWidth>=880;
   const avail = wide ? Math.min(window.innerWidth-440,700) : Math.min(window.innerWidth,660)-60;
-  const cw=Math.min(76,Math.floor((avail-30)/lv.cols));
+  /* cửa sổ thấp (laptop nhỏ, ngang): ô còn phải lọt theo CHIỀU CAO — chừa chỗ header/khay/tên */
+  const availH = window.innerHeight-225;
+  const cw=Math.max(44,Math.min(76,Math.floor((avail-30)/lv.cols),Math.floor((availH-30)/lv.rows)));
 
   const hints=new Set();
   for(const k of lv.cons) if(k.t==="behind"){ const b=behindCell(k.target);
@@ -550,7 +552,8 @@ function renderHoiLang(lv){
   $("tray").style.display="";
   const wide = window.innerWidth>=880;
   const avail = wide ? Math.min(window.innerWidth-440,700) : Math.min(window.innerWidth,660)-60;
-  const cw = Math.min(76, Math.floor((avail-30)/lv.cols));
+  const availH = window.innerHeight-225;
+  const cw = Math.max(44,Math.min(76, Math.floor((avail-30)/lv.cols), Math.floor((availH-30)/lv.rows)));
 
   let html=`<div class="board hoi" style="--cw:${cw}px;grid-template-columns:repeat(${lv.cols},${cw}px)">`;
   for(let y=0;y<lv.rows;y++) for(let x=0;x<lv.cols;x++){

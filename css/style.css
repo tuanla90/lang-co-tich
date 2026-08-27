@@ -30,12 +30,12 @@ h1 .tilde{color:var(--la)}
 /* ===== Bố cục: dọc mặc định, ngang 2 cột từ 880px ===== */
 .game{width:100%;max-width:1100px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .panel,.stage{display:contents}
-#scene{order:1} #stagebox{order:2} #nameplate{order:3} #tray{order:4} #chips{order:5} .bar{order:6}
+#scene{order:1} #stagebox{order:2} #nameplate{order:3} #tray{order:4} #chips{order:5}
 
 @media (min-width:880px){
   .game{display:grid;grid-template-columns:minmax(300px,360px) 1fr;gap:16px;align-items:start}
   .panel{display:flex;flex-direction:column;gap:12px;position:sticky;top:8px;
-    max-height:calc(100vh - 30px);overflow-y:auto;padding-right:2px}
+    max-height:calc(100vh - 90px);overflow-y:auto;padding-right:2px}  /* trừ cả header phía trên */
   .stage{display:flex;flex-direction:column;align-items:center;gap:12px}
 }
 
@@ -128,7 +128,16 @@ h1 .tilde{color:var(--la)}
 .chip.bad .mark{background:var(--bad);border-color:var(--bad)}
 .chip.bad .mark::after{content:"!"}
 
-.bar{display:flex;gap:10px}
+/* ===== Cụm nút góc trên phải: 💡 + ☰ (trình đơn) ===== */
+.topbar{position:fixed;top:10px;right:12px;display:flex;gap:8px;z-index:6}
+.btn.round{width:46px;height:46px;padding:0;border-radius:50%;font-size:20px;
+  display:grid;place-items:center;box-shadow:0 2px 6px rgba(59,43,30,.18)}
+.menu-pop{position:absolute;top:54px;right:0;display:none;flex-direction:column;gap:7px;
+  background:var(--diep-sang);border:var(--vien);border-radius:16px;padding:9px;
+  min-width:184px;box-shadow:0 8px 22px rgba(59,43,30,.3)}
+.menu-pop.show{display:flex}
+.menu-pop .btn{width:100%;text-align:left;border-radius:11px;font-size:14.5px;padding:9px 13px}
+
 .btn{border:var(--vien);border-radius:999px;background:var(--diep-sang);color:var(--muc);
   font-size:15px;font-weight:700;padding:9px 20px;cursor:pointer}
 .btn.primary{background:var(--son);color:#FFF4E0;border-color:var(--son)}
@@ -451,8 +460,9 @@ h1 .tilde{color:var(--la)}
   .tray-slot svg{width:38px;height:38px}
   .tray-slot span{font-size:10px}
 
-  .bar{gap:6px}
-  .btn{font-size:13px;padding:7px 12px}
+  .topbar{top:6px;right:8px;gap:6px}
+  .btn.round{width:40px;height:40px;font-size:17px}
+  header{text-align:left;padding:2px 100px 0 4px}   /* chừa chỗ cho cụm nút góc phải */
   .stage-inner{padding:2px}
 
   /* màn kể chuyện: khung tranh gọn lại */

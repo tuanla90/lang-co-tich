@@ -82,6 +82,7 @@ function load(i){
   else for(const r of lv.rows) mAssign[r]=null;
   $("veil").classList.remove("show");
   $("mapVeil").classList.remove("show");   // chọn màn xong là bản đồ tự đóng
+  $("menuPop").classList.remove("show");
   render();
   /* A8: bàn mới trượt nhẹ lên */
   const sb=$("stagebox");
@@ -107,9 +108,21 @@ $("nextBtn").onclick=()=>{
   if(L().voTan){ const i=deMoiHoiLang(L().doKhoChon||"vừa"); if(i>=0) load(i); return; }
   load(cur+1);
 };
-function sndIcon(){ $("sndBtn").textContent = SFX.on ? "🔉" : "🔇"; }
+function sndIcon(){ $("sndBtn").textContent = (SFX.on ? "🔉" : "🔇") + " Âm thanh"; }
 $("sndBtn").onclick=()=>{ SFX.toggle(); if(SFX.on) SFX.play("cham"); sndIcon(); };
 sndIcon();
+
+/* Trình đơn ☰: gom Bản đồ / Xếp lại / Túi đồ / Âm thanh vào một chỗ */
+const dongMenu=()=>{ $("menuPop").classList.remove("show"); $("menuBtn").setAttribute("aria-expanded","false"); };
+$("menuBtn").onclick=e=>{
+  e.stopPropagation();
+  if(window.SFX) SFX.play("cham");
+  const mo=$("menuPop").classList.toggle("show");
+  $("menuBtn").setAttribute("aria-expanded", mo);
+};
+document.addEventListener("click", e=>{ if(!e.target.closest(".topbar")) dongMenu(); });
+/* chọn mục nào cũng khép trình đơn lại — riêng Âm thanh giữ mở để bật/tắt thấy ngay */
+["mapBtn","reset","bagBtn"].forEach(id=>$(id).addEventListener("click", dongMenu));
 
 $("sayWin").onclick=()=>speak(stripTags($("winStory").innerHTML));
 if(!window.speechSynthesis) $("sayWin").style.display="none";
