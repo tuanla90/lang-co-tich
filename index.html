@@ -6,7 +6,7 @@
 <title>Làng Cổ Tích</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
 
@@ -31,12 +31,20 @@
 <div class="topbar">
   <button class="btn round" id="hintBtn" aria-label="Gợi ý">💡</button>
   <button class="btn round" id="menuBtn" aria-label="Trình đơn" aria-expanded="false">☰</button>
-  <div class="menu-pop" id="menuPop">
-    <button class="btn" id="mapBtn">🗺️ Bản đồ làng</button>
-    <button class="btn" id="reset">🔄 Xếp lại</button>
-    <button class="btn" id="bagBtn">🧺 Túi đồ</button>
-    <button class="btn" id="sndBtn">🔉 Âm thanh</button>
-  </div>
+</div>
+
+<!-- ☰ mở ngăn kéo: lớp phủ mờ + drawer trượt từ phải, sẵn chỗ thêm config sau này -->
+<div class="veil" id="menuVeil">
+  <nav class="drawer" aria-label="Trình đơn trò chơi">
+    <div class="drawer-head">
+      <b>Làng Cổ Tích</b>
+      <button class="drawer-close" id="menuClose" aria-label="Đóng">✕</button>
+    </div>
+    <button class="drawer-item" id="mapBtn"><span class="d-ic">🗺️</span><span>Bản đồ làng</span></button>
+    <button class="drawer-item" id="reset"><span class="d-ic">🔄</span><span>Xếp lại màn này</span></button>
+    <button class="drawer-item" id="bagBtn"><span class="d-ic">🧺</span><span>Túi đồ</span></button>
+    <button class="drawer-item" id="sndBtn"><span class="d-ic">🔉</span><span>Âm thanh: đang bật</span></button>
+  </nav>
 </div>
 
 <!-- Bản đồ làng: chọn chương + màn, tách khỏi màn chơi -->

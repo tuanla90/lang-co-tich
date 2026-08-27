@@ -82,7 +82,7 @@ function load(i){
   else for(const r of lv.rows) mAssign[r]=null;
   $("veil").classList.remove("show");
   $("mapVeil").classList.remove("show");   // chọn màn xong là bản đồ tự đóng
-  $("menuPop").classList.remove("show");
+  $("menuVeil").classList.remove("show");
   render();
   /* A8: bàn mới trượt nhẹ lên */
   const sb=$("stagebox");
@@ -108,20 +108,22 @@ $("nextBtn").onclick=()=>{
   if(L().voTan){ const i=deMoiHoiLang(L().doKhoChon||"vừa"); if(i>=0) load(i); return; }
   load(cur+1);
 };
-function sndIcon(){ $("sndBtn").textContent = (SFX.on ? "🔉" : "🔇") + " Âm thanh"; }
+function sndIcon(){
+  $("sndBtn").innerHTML = `<span class="d-ic">${SFX.on?"🔉":"🔇"}</span><span>Âm thanh: ${SFX.on?"đang bật":"đang tắt"}</span>`;
+}
 $("sndBtn").onclick=()=>{ SFX.toggle(); if(SFX.on) SFX.play("cham"); sndIcon(); };
 sndIcon();
 
-/* Trình đơn ☰: gom Bản đồ / Xếp lại / Túi đồ / Âm thanh vào một chỗ */
-const dongMenu=()=>{ $("menuPop").classList.remove("show"); $("menuBtn").setAttribute("aria-expanded","false"); };
-$("menuBtn").onclick=e=>{
-  e.stopPropagation();
+/* Trình đơn ☰: lớp phủ mờ + ngăn kéo trượt từ phải */
+const dongMenu=()=>{ $("menuVeil").classList.remove("show"); $("menuBtn").setAttribute("aria-expanded","false"); };
+$("menuBtn").onclick=()=>{
   if(window.SFX) SFX.play("cham");
-  const mo=$("menuPop").classList.toggle("show");
-  $("menuBtn").setAttribute("aria-expanded", mo);
+  $("menuVeil").classList.add("show");
+  $("menuBtn").setAttribute("aria-expanded","true");
 };
-document.addEventListener("click", e=>{ if(!e.target.closest(".topbar")) dongMenu(); });
-/* chọn mục nào cũng khép trình đơn lại — riêng Âm thanh giữ mở để bật/tắt thấy ngay */
+$("menuClose").onclick=dongMenu;
+$("menuVeil").onclick=e=>{ if(e.target.id==="menuVeil") dongMenu(); };   // chạm nền mờ = đóng
+/* chọn mục nào cũng khép ngăn kéo — riêng Âm thanh giữ mở để thấy bật/tắt ngay */
 ["mapBtn","reset","bagBtn"].forEach(id=>$(id).addEventListener("click", dongMenu));
 
 $("sayWin").onclick=()=>speak(stripTags($("winStory").innerHTML));

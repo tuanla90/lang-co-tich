@@ -132,11 +132,28 @@ h1 .tilde{color:var(--la)}
 .topbar{position:fixed;top:10px;right:12px;display:flex;gap:8px;z-index:6}
 .btn.round{width:46px;height:46px;padding:0;border-radius:50%;font-size:20px;
   display:grid;place-items:center;box-shadow:0 2px 6px rgba(59,43,30,.18)}
-.menu-pop{position:absolute;top:54px;right:0;display:none;flex-direction:column;gap:7px;
-  background:var(--diep-sang);border:var(--vien);border-radius:16px;padding:9px;
-  min-width:184px;box-shadow:0 8px 22px rgba(59,43,30,.3)}
-.menu-pop.show{display:flex}
-.menu-pop .btn{width:100%;text-align:left;border-radius:11px;font-size:14.5px;padding:9px 13px}
+/* Ngăn kéo trình đơn: lớp phủ mờ + drawer trượt từ mép phải */
+#menuVeil{padding:0}
+.drawer{position:absolute;top:0;right:0;bottom:0;width:min(288px,84vw);
+  background:var(--diep-sang);border-left:3px solid var(--muc);
+  padding:14px 14px 18px;display:flex;flex-direction:column;gap:9px;
+  box-shadow:-8px 0 24px rgba(59,43,30,.3)}
+.veil.show .drawer{animation:drawerIn .22s ease}
+@keyframes drawerIn{from{transform:translateX(100%)}to{transform:none}}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;
+  padding:2px 4px 10px;border-bottom:2px dashed rgba(59,43,30,.25);margin-bottom:4px}
+.drawer-head b{font-family:"Baloo 2","Be Vietnam Pro",sans-serif;font-size:18px;color:var(--son)}
+.drawer-close{border:none;background:none;font-size:19px;cursor:pointer;color:var(--muc);
+  width:36px;height:36px;border-radius:50%}
+.drawer-close:hover{background:rgba(59,43,30,.08)}
+.drawer-item{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  border:var(--vien);border-radius:13px;background:#fff;cursor:pointer;
+  font-family:"Baloo 2","Be Vietnam Pro",sans-serif;font-weight:700;
+  font-size:15.5px;color:var(--muc);padding:11px 14px}
+.drawer-item:hover{background:#FBF3DC}
+.drawer-item:focus-visible{outline:3px solid var(--cham);outline-offset:2px}
+.drawer-item .d-ic{font-size:21px;width:28px;text-align:center;flex:none}
+@media (prefers-reduced-motion:reduce){.veil.show .drawer{animation:none}}
 
 .btn{border:var(--vien);border-radius:999px;background:var(--diep-sang);color:var(--muc);
   font-size:15px;font-weight:700;padding:9px 20px;cursor:pointer}
