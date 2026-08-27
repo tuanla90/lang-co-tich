@@ -1,12 +1,9 @@
-# Rác hệ điều hành
-Thumbs.db
-desktop.ini
-.DS_Store
-
-# Trình soạn thảo
-.vscode/
-.idea/
-*.swp
-
-# Nếu sau này có build/asset sinh ra tự động thì thêm vào đây
-node_modules/
+# Đồ nghề vá tay một lần — không track
+patch*.js
+extract*.js
+extracted*
+fix.js
+get_*.js
+script.js
+svg_compare.html
+server.log

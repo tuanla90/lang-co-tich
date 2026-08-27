@@ -186,3 +186,56 @@ function thu(ten, thayDoi={}){
           moiNguoi:r.tuDo, thuaRB:r.rangBuocThua.length};
 }
 function ap(ten, thayDoi={}){ const i=iOf(ten); Object.assign(LEVELS[i], thayDoi); load(i); }
+
+/* ===== Soát HÌNH TRÙNG =====
+   Hai cột trong cùng một màn ma trận mà vẽ giống hệt nhau thì trẻ không phân biệt
+   nổi — đề hoá mù mờ dù logic vẫn chặt. Gọi soatHinh() để quét cả game. */
+function soatHinh(){
+  const loi = [], canhBao = [];
+
+  /* 1. màn ma trận có hai cột cùng một bức */
+  LEVELS.forEach((l,i)=>{
+    if(l.type!=="matrix") return;
+    const nhom={};
+    l.colsM.forEach(c=>{ const s=PLACES[c] && PLACES[c].svg;
+      (nhom[s]=nhom[s]||[]).push(`${PLACES[c].name} (${c})`); });
+    Object.values(nhom).filter(a=>a.length>1)
+      .forEach(a=>loi.push(`màn ${i+1} "${l.name}": ${a.join(" ≡ ")} — vẽ giống hệt nhau`));
+  });
+
+  /* 2. màn xếp chỗ có hai môi trường cùng một bức */
+  LEVELS.forEach((l,i)=>{
+    if(!l.env || l.env.length<2) return;
+    const nhom={};
+    l.env.forEach(e=>{ const s=ENVS[e.id] && ENVS[e.id].svg;
+      (nhom[s]=nhom[s]||[]).push(`${ENVS[e.id].name} (${e.id})`); });
+    Object.values(nhom).filter(a=>[...new Set(a)].length>1)
+      .forEach(a=>loi.push(`màn ${i+1} "${l.name}": ${[...new Set(a)].join(" ≡ ")} — vẽ giống hệt nhau`));
+  });
+
+  /* 3. màn hội làng có hai mốc cùng một bức */
+  LEVELS.forEach((l,i)=>{
+    if(l.type!=="hoilang" || !l.moc || l.moc.length<2) return;
+    const nhom={};
+    l.moc.forEach(m=>{ const s=ENVS[m.art] && ENVS[m.art].svg;
+      (nhom[s]=nhom[s]||[]).push(ENVS[m.art].name); });
+    Object.values(nhom).filter(a=>a.length>1)
+      .forEach(a=>loi.push(`màn ${i+1} "${l.name}": hai mốc cùng hình ${a[0]}`));
+  });
+
+  /* 4. thống kê chung: bức nào đang bị nhiều id dùng chung (chỉ để biết, không phải lỗi —
+     ENVS dùng cho ô bàn cờ, PLACES dùng cho cột ma trận, trùng nhau là tái dùng hợp lệ) */
+  const theoSvg={};
+  for(const [bo,b] of [["ENVS",ENVS],["PLACES",PLACES]])
+    for(const [id,v] of Object.entries(b))
+      if(v && v.svg) (theoSvg[v.svg]=theoSvg[v.svg]||[]).push(`${bo}.${id}`);
+  Object.values(theoSvg).filter(a=>a.length>1).forEach(a=>{
+    const chiPlaces = a.filter(x=>x.startsWith("PLACES."));
+    if(chiPlaces.length>1) canhBao.push(chiPlaces.join(" ≡ "));
+  });
+
+  if(loi.length) console.error("HÌNH TRÙNG TRONG CÙNG MỘT MÀN:", loi);
+  else console.log("✓ không màn nào có hai hình giống hệt nhau");
+  if(canhBao.length) console.warn("Nhiều PLACES dùng chung một bức (đặt cùng màn sẽ mù mờ):", canhBao);
+  return { loi, canhBao };
+}

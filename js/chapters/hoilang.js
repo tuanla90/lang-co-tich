@@ -98,6 +98,8 @@ function deMoiHoiLang(doKho){
   const giu = { id: LEVELS[i].id, _ch: LEVELS[i]._ch, voTan: true, doKhoChon: doKho };
   Object.keys(LEVELS[i]).forEach(k => delete LEVELS[i][k]);
   Object.assign(LEVELS[i], man, giu);
+  /* gắn lại nhãn kỹ năng + tier — thiếu là lượt chơi không được tính vào Góc cha mẹ */
+  if(typeof apDungNhan === "function") apDungNhan([LEVELS[i]]);
   return i;
 }
 

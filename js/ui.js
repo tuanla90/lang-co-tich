@@ -81,8 +81,9 @@ function renderNav(lv){
 
   $("dots").innerHTML =
     `<div class="chsel">`+spans.map(s=>{
-      const total=s.c.levels.length;
-      const doneCount=s.c.levels.reduce((n,_,j)=>n+(done.includes(s.start+j)?1:0),0);
+      /* đề vô tận không tính vào tiến trình chương — kẻo card không bao giờ "✓ xong" */
+      const total=s.c.levels.filter(l=>!l.voTan).length;
+      const doneCount=s.c.levels.reduce((n,l,j)=>n+(!l.voTan&&done.includes(s.start+j)?1:0),0);
       const locked=!window.DEV && s.start>maxUnlocked;
       let icKey=CH_ICON[s.c.id];
       if(!icKey||!CHARS[icKey]){ const pl=s.c.levels.find(l=>l.chars&&l.chars.length); icKey=pl?pl.chars[0]:"but"; }
