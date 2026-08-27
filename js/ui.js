@@ -27,8 +27,11 @@ function render(){
   if(lv._ch) $("chapterName").textContent = lv._ch;
   $("scene").innerHTML=`<span class="lv-name">Màn ${cur+1} · ${lv.name}</span> ${lv.scene}`
     + (window.speechSynthesis ? ` <button class="say" id="sayBtn" aria-label="Đọc to lời dẫn">🔊</button>` : "");
+  /* Mobile: lời dẫn thu gọn 2 dòng — chạm vào là bung/gấp lại */
+  $("scene").classList.remove("expanded");
+  $("scene").onclick=()=>$("scene").classList.toggle("expanded");
   const sb=$("sayBtn");
-  if(sb) sb.onclick=()=>speak(`Màn ${cur+1}. ${lv.name}. ${stripTags(lv.scene)}`);
+  if(sb) sb.onclick=e=>{ e.stopPropagation(); speak(`Màn ${cur+1}. ${lv.name}. ${stripTags(lv.scene)}`); };
 
   const list = lv.type==="matrix" ? lv.clues : lv.type==="story" ? lv.panels
            : lv.type==="hoilang" ? hlLuat(lv) : lv.cons;

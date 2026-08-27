@@ -24,9 +24,19 @@
 
 <header>
   <div class="eyebrow" id="chapterName">Chương 1 · Tấm Cám</div>
-  <h1>Làng <span class="tilde">Cổ Tích</span></h1>
-  <div class="dots" id="dots"></div>
+  <h1 class="brand">Làng <span class="tilde">Cổ Tích</span></h1>
 </header>
+
+<!-- Bản đồ làng: chọn chương + màn, tách khỏi màn chơi -->
+<div class="veil" id="mapVeil">
+  <div class="win map">
+    <h2>🗺️ Bản đồ làng</h2>
+    <div class="dots" id="dots"></div>
+    <div class="modal-foot">
+      <button class="btn primary" id="mapClose">Đóng</button>
+    </div>
+  </div>
+</div>
 
 <!-- Chế độ Hội làng: chọn bậc rồi chơi đề vô tận -->
 <div class="veil" id="hlVeil">
@@ -53,6 +63,7 @@
     <div class="scene" id="scene"></div>
     <div class="chips" id="chips"></div>
     <div class="bar">
+      <button class="btn" id="mapBtn" aria-label="Chọn màn">🗺️</button>
       <button class="btn" id="reset">Xếp lại</button>
       <button class="btn" id="bagBtn">🧺 Túi đồ</button>
       <button class="btn" id="hintBtn" aria-label="Gợi ý">💡 Gợi ý</button>

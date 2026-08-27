@@ -418,3 +418,58 @@ h1 .tilde{color:var(--la)}
 .win .modal-foot .btn{margin:0}
 
 @media (prefers-reduced-motion:reduce){.veil.show{animation:none}}
+
+/* ============================================================
+   Tách chọn-màn khỏi màn chơi + nén mobile vào MỘT khung hình
+   ============================================================ */
+.win.map{max-width:560px}
+.win.map .dots{flex:0 1 auto;min-height:0;overflow-y:auto;margin:0;
+  display:flex;flex-direction:column;gap:10px}
+
+@media (max-width:879px){
+  body{padding:6px 8px 10px}
+  header{margin-bottom:2px}
+  .brand{display:none}                    /* logo đã có ở màn mở đầu — nhường chỗ cho bàn */
+  .game{gap:7px}
+
+  .scene{font-size:13px;line-height:1.4;padding:7px 12px;cursor:pointer}
+  .scene:not(.expanded){display:-webkit-box;-webkit-line-clamp:2;
+    -webkit-box-orient:vertical;overflow:hidden}
+  .scene .lv-name{font-size:14px}
+
+  .nameplate{min-height:16px;font-size:11.5px}
+
+  .chips{gap:5px}
+  .chips h3{display:none}
+  .chip{padding:4px 10px;font-size:12.5px;gap:7px}
+  .chip .mark{width:17px;height:17px;font-size:11px}
+  .ref .ref-ic{width:16px;height:16px;vertical-align:-3px}
+  .ref .ref-ic svg{width:16px;height:16px}
+
+  .tray{padding:6px;gap:6px;min-height:58px}
+  .tray-slot{width:50px;height:60px}
+  .tray-slot svg{width:38px;height:38px}
+  .tray-slot span{font-size:10px}
+
+  .bar{gap:6px}
+  .btn{font-size:13px;padding:7px 12px}
+  .stage-inner{padding:2px}
+
+  /* màn kể chuyện: khung tranh gọn lại */
+  .storywrap{gap:8px}
+  .strip{gap:7px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+  .pf{padding:7px 7px 8px;gap:4px}
+  .pf-stage{min-height:64px;padding:4px}
+  .pf-slot{width:52px;height:52px}
+  .pf-who-tok{width:30px;height:30px}
+  .pf-cue{font-size:11.5px;line-height:1.3}
+  .pf-after{font-size:11px;line-height:1.25}
+  .reveal{padding:6px 16px 6px 8px}
+  .reveal-art{width:36px;height:36px}
+
+  /* màn ma trận: đầu hàng/cột gọn lại */
+  .mhead svg{width:34px;height:34px}
+  .mrowhead svg{width:36px;height:36px}
+  .mhead b,.mrowhead b{font-size:11px}
+  .mcell{min-height:44px}
+}

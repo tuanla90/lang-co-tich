@@ -80,7 +80,9 @@ function load(i){
   if(lv.type==="place"||lv.type==="hoilang") for(const c of lv.chars) place[c]=null;
   else if(lv.type==="story") lv.panels.forEach((p,j)=>sAssign[j]=null);
   else for(const r of lv.rows) mAssign[r]=null;
-  $("veil").classList.remove("show"); render();
+  $("veil").classList.remove("show");
+  $("mapVeil").classList.remove("show");   // chọn màn xong là bản đồ tự đóng
+  render();
   /* A8: bàn mới trượt nhẹ lên */
   const sb=$("stagebox");
   sb.classList.remove("lv-enter"); void sb.offsetWidth; sb.classList.add("lv-enter");
@@ -88,6 +90,8 @@ function load(i){
 }
 
 $("reset").onclick=()=>load(cur);
+$("mapBtn").onclick=()=>{ if(window.SFX) SFX.play("cham"); $("mapVeil").classList.add("show"); };
+$("mapClose").onclick=()=>$("mapVeil").classList.remove("show");
 $("hintBtn").onclick=()=>giveHint();
 $("bagBtn").onclick=()=>{ renderBag(); $("bagVeil").classList.add("show"); };
 $("bagClose").onclick=()=>$("bagVeil").classList.remove("show");
