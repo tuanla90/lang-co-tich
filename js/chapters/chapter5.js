@@ -1,8 +1,8 @@
 /* ============================================================
-   chapter5.js — Chương 5: Sơn Tinh Thuỷ Tinh (7 màn)
+   chapter5.js, Chương 5: Sơn Tinh Thuỷ Tinh (7 màn)
    Đất diễn của hai luật địa hình: mặt nước chỉ thần nước đứng
    được (onEnv ao), đỉnh núi cho thần núi (onEnv nui).
-   Sơn Tinh là Đức Thánh Tản — giọng trang trọng, không pha trò.
+   Sơn Tinh là Đức Thánh Tản, giọng trang trọng, không pha trò.
    ============================================================ */
 window.CHAPTERS = window.CHAPTERS || [];
 
@@ -17,9 +17,9 @@ CHAPTERS.push({
    chars:["vua","minuong","sontinh","thuytinh"],
    cons:[{t:"adjEnv",c:"vua",e:"cung",txt:"Vua Hùng ngự trước điện"},
          {t:"adjChar",c:"minuong",target:"vua",txt:"Mị Nương đứng cạnh cha"},
-         {t:"adjEnv",c:"sontinh",e:"nui",txt:"Sơn Tinh — chúa vùng non cao"},
-         {t:"adjEnv",c:"thuytinh",e:"ao",txt:"Thuỷ Tinh — chúa miền nước thẳm"},
-         {t:"notAdjChar",c:"sontinh",target:"thuytinh",txt:"Hai thần gườm nhau — KHÔNG đứng cạnh nhau"}],
+         {t:"adjEnv",c:"sontinh",e:"nui",txt:"Sơn Tinh, chúa vùng non cao"},
+         {t:"adjEnv",c:"thuytinh",e:"ao",txt:"Thuỷ Tinh, chúa miền nước thẳm"},
+         {t:"notAdjChar",c:"sontinh",target:"thuytinh",txt:"Hai thần gườm nhau, KHÔNG đứng cạnh nhau"}],
    story:"@c5.kenre.story"},
 
   {type:"place", name:"Trổ tài", cols:5, rows:4,
@@ -36,8 +36,8 @@ CHAPTERS.push({
   {type:"matrix", name:"Sính lễ",
    scene:"@c5.sinhle.scene",
    rows:["sontinh","thuytinh","suga"], colsM:["rungnui","songbien","dongbang"],
-   clues:[{t:"mIs", c:"sontinh", col:"rungnui", txt:"Sơn Tinh về ngay rừng núi — voi ngà, gà cựa, ngựa quý đều là sản vật của rừng!"},
-          {t:"mNot",c:"thuytinh", col:"dongbang", txt:"Thuỷ Tinh không lên cạn lâu được — đành quanh quẩn sông biển"},
+   clues:[{t:"mIs", c:"sontinh", col:"rungnui", txt:"Sơn Tinh về ngay rừng núi, voi ngà, gà cựa, ngựa quý đều là sản vật của rừng!"},
+          {t:"mNot",c:"thuytinh", col:"dongbang", txt:"Thuỷ Tinh không lên cạn lâu được, đành quanh quẩn sông biển"},
           {t:"mUniq",txt:"Mỗi vùng chỉ một người tìm"}],
    story:"@c5.sinhle.story"},
 

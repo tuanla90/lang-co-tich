@@ -1,8 +1,8 @@
 /* ============================================================
-   chapter4.js — Chương 4: Thánh Gióng (7 màn)
+   chapter4.js, Chương 4: Thánh Gióng (7 màn)
    Dàn hoàng gia đầy đủ (vua, sứ giả, 2 lính). Tre ngà chương 1
    được trả nghĩa: "ai nhổ nổi cả bụi thì khoẻ như thần".
-   Giọng chương: trang trọng, ấm — không pha trò với bậc Thánh.
+   Giọng chương: trang trọng, ấm, không pha trò với bậc Thánh.
    ============================================================ */
 window.CHAPTERS = window.CHAPTERS || [];
 
@@ -22,7 +22,7 @@ CHAPTERS.push({
    scene:"@c4.giacden.scene",
    rows:["vua","linh","suga"], colsM:["cungvua","bienai","langpd"],
    clues:[{t:"mIs", c:"linh", col:"bienai", txt:"Lính đã ra hết biên ải chặn giặc"},
-          {t:"mNot",c:"suga", col:"cungvua", txt:"Sứ giả không ở lại cung — vua sai đi khắp nơi tìm người tài"},
+          {t:"mNot",c:"suga", col:"cungvua", txt:"Sứ giả không ở lại cung, vua sai đi khắp nơi tìm người tài"},
           {t:"mUniq",txt:"Mỗi nơi chỉ có một người"}],
    story:"@c4.giacden.story"},
 
@@ -39,7 +39,7 @@ CHAPTERS.push({
    scene:"@c4.calanggopgao.scene",
    env:[{id:"noicom",cells:[[2,1],[2,2]]},{id:"bepenv",cells:[[0,1]]},{id:"tre",cells:[[4,0]]},{id:"cayda",cells:[[0,3]]},{id:"tangda",cells:[[4,3]]}], blocked:[], mud:[],
    chars:["giong","me","balao","trau"],
-   cons:[{t:"adjEnv",c:"giong",e:"noicom",txt:"Gióng ngồi ăn — hết nồi này đến nồi khác"},
+   cons:[{t:"adjEnv",c:"giong",e:"noicom",txt:"Gióng ngồi ăn, hết nồi này đến nồi khác"},
          {t:"adjEnv",c:"me",e:"bepenv",txt:"Mẹ thổi cơm bên bếp"},
          {t:"adjChar",c:"balao",target:"me",txt:"Bà lão sang giúp mẹ Gióng"},
          {t:"behind",c:"trau",target:"giong",txt:"Trâu đứng sau lưng Gióng"}],

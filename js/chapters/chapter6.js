@@ -1,6 +1,6 @@
 /* ============================================================
-   chapter6.js — Chương 6: Sự tích Trầu Cau (7 màn)
-   Tân và Lang dùng chung một SVG — người chơi cũng không phân
+   chapter6.js, Chương 6: Sự tích Trầu Cau (7 màn)
+   Tân và Lang dùng chung một SVG, người chơi cũng không phân
    biệt nổi hai anh em, y như nàng Lưu. Chuyện buồn kể giọng dịu:
    mọi mất mát đều là "hoá thành", và kết là bộ ba mãi kề nhau.
    ============================================================ */
@@ -15,16 +15,16 @@ CHAPTERS.push({
    scene:"@c6.haigiotnuoc.scene",
    env:[{id:"nha",cells:[[0,0]]},{id:"tre",cells:[[3,2]]},{id:"cayda",cells:[[3,0]]}], blocked:[], mud:[],
    chars:["tan","lang","nangluu"],
-   cons:[{t:"chain",cs:["tan","lang"],txt:"Anh em như hình với bóng — luôn KỀ nhau"},
+   cons:[{t:"chain",cs:["tan","lang"],txt:"Anh em như hình với bóng, luôn KỀ nhau"},
          {t:"adjEnv",c:"tan",e:"nha",txt:"Đến nhà thầy xin học"},
-         {t:"adjEnv",c:"nangluu",e:"nha",txt:"Con gái thầy — nàng Lưu — ra chào khách"}],
+         {t:"adjEnv",c:"nangluu",e:"nha",txt:"Con gái thầy, nàng Lưu, ra chào khách"}],
    story:"@c6.haigiotnuoc.story"},
 
   {type:"place", name:"Bát cơm một đôi đũa", cols:4, rows:3,
    scene:"@c6.batcommotdoidu.scene",
    env:[{id:"batcom",cells:[[1,1],[2,1]]},{id:"bepenv",cells:[[3,2]]},{id:"tre",cells:[[0,0]]}], blocked:[], mud:[],
    chars:["tan","lang","nangluu"],
-   cons:[{t:"adjEnv",c:"tan",e:"batcom",txt:"Người được mời ngồi vào ăn trước — là ANH"},
+   cons:[{t:"adjEnv",c:"tan",e:"batcom",txt:"Người được mời ngồi vào ăn trước, là ANH"},
          {t:"adjChar",c:"lang",target:"tan",txt:"Người em đứng bên, hai tay nhường đũa"},
          {t:"hideIn",c:"nangluu",e:"bepenv",txt:"Nàng nấp sau bếp, lặng lẽ để ý"}],
    story:"@c6.batcommotdoidu.story"},
@@ -33,7 +33,7 @@ CHAPTERS.push({
    scene:"@c6.chaonham.scene",
    rows:["tan","lang","nangluu"], colsM:["dong","conglang","nhatren"],
    clues:[{t:"mIs", c:"tan", col:"dong", txt:"Người anh còn mải cày nốt thửa ruộng, về sau"},
-          {t:"mNot",c:"nangluu", col:"conglang", txt:"Nàng từ nhà trong chạy ra — đâu phải người đứng sẵn ở cổng"},
+          {t:"mNot",c:"nangluu", col:"conglang", txt:"Nàng từ nhà trong chạy ra, đâu phải người đứng sẵn ở cổng"},
           {t:"mUniq",txt:"Mỗi nơi chỉ có một người"}],
    story:"@c6.chaonham.story"},
 

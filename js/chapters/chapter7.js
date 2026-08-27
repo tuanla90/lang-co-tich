@@ -1,8 +1,8 @@
 /* ============================================================
-   chapter7.js — Chương 7: Mai An Tiêm (7 màn)
-   Sự tích quả dưa hấu — chương của TỰ LỰC: "của cho là của nợ".
+   chapter7.js, Chương 7: Mai An Tiêm (7 màn)
+   Sự tích quả dưa hấu, chương của TỰ LỰC: "của cho là của nợ".
    Đảo hoang = bàn cờ viền nước; điểm nhấn: quả dưa khắc tên
-   TRÔI TRÊN NƯỚC (onEnv ao) — gửi thư theo sóng.
+   TRÔI TRÊN NƯỚC (onEnv ao), gửi thư theo sóng.
    ============================================================ */
 window.CHAPTERS = window.CHAPTERS || [];
 
@@ -16,7 +16,7 @@ CHAPTERS.push({
    env:[{id:"cung",cells:[[0,0]]},{id:"nui",cells:[[4,0]]},{id:"tre",cells:[[4,2]]}], blocked:[], mud:[],
    chars:["vua","antiem","linh"],
    cons:[{t:"adjEnv",c:"vua",e:"cung",txt:"Vua ngự trước điện, mặt hướng vào trong"},
-         {t:"behind",c:"antiem",target:"vua",txt:"Vua ngoảnh mặt — An Tiêm đứng sau lưng mà tâu"},
+         {t:"behind",c:"antiem",target:"vua",txt:"Vua ngoảnh mặt, An Tiêm đứng sau lưng mà tâu"},
          {t:"adjChar",c:"linh",target:"vua",txt:"Lính hộ giá"}],
    story:"@c7.cuacholacuano.story"},
 
@@ -51,7 +51,7 @@ CHAPTERS.push({
    env:[{id:"leu",cells:[[0,0]]},{id:"ao",cells:[[4,3]]},{id:"tre",cells:[[0,3]]},{id:"tangda",cells:[[2,0]]},{id:"cayda",cells:[[4,0]]},{id:"nui",cells:[[2,3]]},{id:"baico",cells:[[0,2]]}], blocked:[], mud:[],
    relic:{id:"hatdua",cell:[0,3]},
    chars:["dua1","dua2","dua3","antiem","voat"],
-   cons:[{t:"line",cs:["dua1","dua2","dua3"],txt:"Dây dưa bò THẲNG một luống — quả nối quả"},
+   cons:[{t:"line",cs:["dua1","dua2","dua3"],txt:"Dây dưa bò THẲNG một luống, quả nối quả"},
          {t:"adjEnv",c:"dua1",e:"leu",txt:"Gốc dây dưa ngay cạnh lều"},
          {t:"adjChar",c:"antiem",target:"dua2",txt:"An Tiêm vun giữa luống"},
          {t:"adjEnv",c:"voat",e:"ao",txt:"Vợ chàng gánh nước từ bờ lên tưới"}],

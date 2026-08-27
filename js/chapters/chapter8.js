@@ -1,7 +1,7 @@
 /* ============================================================
-   chapter8.js — Chương 8: Chú Cuội (7 màn)
-   Trả món nợ lore treo từ chương 1: "cây đa đầu làng — hình như
-   có ai ngồi vắt vẻo trên đó…" — chính là Cuội, và cây đa chính
+   chapter8.js, Chương 8: Chú Cuội (7 màn)
+   Trả món nợ lore treo từ chương 1: "cây đa đầu làng, hình như
+   có ai ngồi vắt vẻo trên đó…" Chính là Cuội, và cây đa chính
    là cây thuốc quý chàng trồng. Khép vòng tròn mùa 1.
    ============================================================ */
 window.CHAPTERS = window.CHAPTERS || [];
@@ -33,7 +33,7 @@ CHAPTERS.push({
    scene:"@c8.loidan.scene",
    rows:["cuoi","vocuoi","cho"], colsM:["giengp","caythuocp","boao"],
    clues:[{t:"mIs", c:"cuoi", col:"giengp", txt:"Cuội chỉ gánh nước GIẾNG trong vắt về tưới cây"},
-          {t:"mNot",c:"cho", col:"boao", txt:"Chó vàng ghét nước, chẳng bao giờ ra bờ ao — nó nằm giữ gốc cây"},
+          {t:"mNot",c:"cho", col:"boao", txt:"Chó vàng ghét nước, chẳng bao giờ ra bờ ao, nó nằm giữ gốc cây"},
           {t:"mUniq",txt:"Mỗi nơi chỉ có một người"}],
    story:"@c8.loidan.story"},
 
@@ -41,9 +41,9 @@ CHAPTERS.push({
    scene:"@c8.noidoinhucuoi.scene",
    env:[{id:"ao",cells:[[0,0]]},{id:"cayda",cells:[[2,0]]},{id:"tre",cells:[[0,2]]}], blocked:[], mud:[],
    chars:["cuoi","vocuoi"],
-   cons:[{t:"onEnv",c:"cuoi",e:"cayda",txt:"Cuội bảo: “tôi GHÉT trèo cây nhất trần đời!” — ngược đấy: chàng ngồi vắt vẻo cả ngày"},
-         {t:"notAdjEnv",c:"cuoi",e:"ao",txt:"Cuội bảo: “tôi mê đứng sát mép ao lắm!” — đừng tin!"},
-         {t:"adjChar",c:"vocuoi",target:"cuoi",txt:"Cuội bảo: “vợ tôi chẳng thèm đứng gần tôi” — lại ngược nốt!"}],
+   cons:[{t:"onEnv",c:"cuoi",e:"cayda",txt:"Cuội bảo: “tôi GHÉT trèo cây nhất trần đời!” Ngược đấy: chàng ngồi vắt vẻo cả ngày"},
+         {t:"notAdjEnv",c:"cuoi",e:"ao",txt:"Cuội bảo: “tôi mê đứng sát mép ao lắm!” Đừng tin!"},
+         {t:"adjChar",c:"vocuoi",target:"cuoi",txt:"Cuội bảo: “vợ tôi chẳng thèm đứng gần tôi”, lại ngược nốt!"}],
    story:"@c8.noidoinhucuoi.story"},
 
   {type:"place", name:"Tưới nhầm!", cols:5, rows:4,
@@ -58,9 +58,9 @@ CHAPTERS.push({
 
   {type:"place", name:"Níu rễ cây", cols:4, rows:4,
    scene:"@c8.niurecay.scene",
-   env:[{id:"cayda",cells:[[1,1]]},{id:"nha",cells:[[3,3]]},{id:"tre",cells:[[0,0]]},{id:"tangda",cells:[[3,0]]}], blocked:[], mud:[],
+   env:[{id:"caythuoc",cells:[[1,1]]},{id:"nha",cells:[[3,3]]},{id:"tre",cells:[[0,0]]},{id:"tangda",cells:[[3,0]]}], blocked:[], mud:[],
    chars:["cuoi","vocuoi","cho"],
-   cons:[{t:"onEnv",c:"cuoi",e:"cayda",txt:"Cuội níu chặt rễ — cây kéo cả người lên!"},
+   cons:[{t:"onEnv",c:"cuoi",e:"caythuoc",txt:"Cuội níu chặt rễ, cây kéo cả người lên!"},
          {t:"adjEnv",c:"vocuoi",e:"nha",txt:"Vợ đứng ở cửa nhà nhìn theo"},
          {t:"adjChar",c:"cho",target:"vocuoi",txt:"Con chó vàng nép bên chân"}],
    story:"@c8.niurecay.story"},

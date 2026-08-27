@@ -1,16 +1,15 @@
 /* ============================================================
-   chotet.js — Chương chèn giữa (id 4.5): PHIÊN CHỢ TẾT
+   chotet.js, Chương chèn giữa (id 4.5): PHIÊN CHỢ TẾT
    Sau khi giặc Ân tan (chương 4), làng mở chợ Tết mừng thắng trận.
 
    Chương này là "chương trả bài" cho đợt review bộ sinh đề:
-   · Màn 2–3: HAI mốc, MỖI MỐC MỘT HÌNH RIÊNG (cây đa + giếng) —
-     vá điểm mơ hồ khi soMoc ≥ 2 dùng chung một hình.
-   · Màn 3: datTuDo — đặt đâu cũng được, luật "đúng vùng" chuyển
+   · Màn 2–3: HAI mốc, MỖI MỐC MỘT HÌNH RIÊNG (cây đa + giếng), vá điểm mơ hồ khi soMoc ≥ 2 dùng chung một hình.
+   · Màn 3: datTuDo, đặt đâu cũng được, luật "đúng vùng" chuyển
      từ CHẶN sang CHẤM: chip vùng lần đầu tiên biết đỏ.
-   · Màn 1: bàn 4×4 — dùng cửa khongGianToiThieu hạ chuẩn đúng cách
+   · Màn 1: bàn 4×4, dùng cửa khongGianToiThieu hạ chuẩn đúng cách
      (ngưỡng mặc định 60 được chỉnh cho bàn 6×6).
    Seed đã săn và kiểm: 20270013 (dễ) · 20280156 (vừa, đủ 2 mốc)
-   · 20301534 (khó, đủ 2 mốc — cần soMocDu vì soMoc chỉ là mức trần).
+   · 20301534 (khó, đủ 2 mốc, cần soMocDu vì soMoc chỉ là mức trần).
    ============================================================ */
 window.CHAPTERS = window.CHAPTERS || [];
 
@@ -43,7 +42,7 @@ window.CHAPTERS = window.CHAPTERS || [];
   if(m2) levels.push(m2);
 
   const m3 = taoManHoiLang({
-    name:"Vãn chợ — tự xếp", chars:KHACH5, tenVung:VUNG5,
+    name:"Vãn chợ, tự xếp", chars:KHACH5, tenVung:VUNG5,
     co:[4,4,4,4,4], soMoc:2, soMocDu:true, soVatCan:3, omHet:true,
     doKho:"khó", seed:20301534, datTuDo:true,
     mocTheoNguoi:MOC, mocArts:["cayda","gieng"], canArt:"rom",

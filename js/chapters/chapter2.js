@@ -1,5 +1,5 @@
 /* ============================================================
-   chapter2.js — Chương 2: Thằng Bờm (7 màn)
+   chapter2.js, Chương 2: Thằng Bờm (7 màn)
    Mỗi câu đồng dao = một màn. Mở đầu nối từ chiếc mo cau chương 1.
    ============================================================ */
 window.CHAPTERS = window.CHAPTERS || [];
@@ -93,7 +93,7 @@ CHAPTERS.push({
    relic:{id:"quatmo",cell:[3,2]},
    chars:["bom","phuong","trau"],
    cons:[{t:"adjEnv",c:"phuong",e:"namxoi",txt:"Phú ông chìa nắm xôi ra"},
-         {t:"adjEnv",c:"bom",e:"namxoi",txt:"Bờm sán lại — thơm quá!"},
+         {t:"adjEnv",c:"bom",e:"namxoi",txt:"Bờm sán lại, thơm quá!"},
          {t:"behind",c:"trau",target:"bom",txt:"Trâu đứng sau lưng Bờm"}],
    story:"@c2.namxoi.story"},
 

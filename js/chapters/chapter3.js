@@ -1,6 +1,6 @@
 /* ============================================================
-   chapter3.js — Chương 3: Cây tre trăm đốt (7 màn)
-   Phú ông + Bụt tái xuất. Luật mới: "khắc nhập" (chain — nhóm liền nhau).
+   chapter3.js, Chương 3: Cây tre trăm đốt (7 màn)
+   Phú ông + Bụt tái xuất. Luật mới: "khắc nhập" (chain, nhóm liền nhau).
    ============================================================ */
 window.CHAPTERS = window.CHAPTERS || [];
 
@@ -96,7 +96,7 @@ CHAPTERS.push({
    cons:[{t:"queue",cs:["but","congai","khoai"],txt:"Bụt – cô dâu – chú rể đứng thành một hàng"},
          {t:"adjEnv",c:"khoai",e:"mamco",txt:"Chú rể mời cỗ"},
          {t:"adjEnv",c:"trau",e:"tre",txt:"Trâu đeo hoa buộc ở bụi tre"},
-         {t:"adjEnv",c:"phuong",e:"mamco",txt:"Phú ông đãi cỗ — lần này thật lòng"}],
+         {t:"adjEnv",c:"phuong",e:"mamco",txt:"Phú ông đãi cỗ, lần này thật lòng"}],
    story:"@c3.damcuoianhkhoa.story"},
 
 ]});

@@ -1,5 +1,5 @@
 /* ============================================================
-   chapter1.js — Chương 1: Tấm Cám (trọn truyện, 14 màn)
+   chapter1.js, Chương 1: Tấm Cám (trọn truyện, 14 màn)
    Thêm chương mới: tạo file chapters/chapterN.js cùng cấu trúc,
    push vào CHAPTERS rồi khai <script> trong index.html.
    ============================================================ */
@@ -50,7 +50,7 @@ CHAPTERS.push({
    chars:["tam","cam","dighe"],
    cons:[{t:"adjEnv",c:"tam",e:"gieng",txt:"Tấm đứng cạnh giếng"},
          {t:"behind",c:"cam",target:"tam",txt:"Cám đứng sau lưng Tấm"},
-         {t:"adjEnv",c:"dighe",e:"nha",txt:"Dì ghẻ ngồi trong nhà — ngại ra sân bẩn chân"}],
+         {t:"adjEnv",c:"dighe",e:"nha",txt:"Dì ghẻ ngồi trong nhà, ngại ra sân bẩn chân"}],
    story:"@c1.nuoibong.story"},
 
   {type:"place", name:"Nghe lén", cols:4, rows:3,
@@ -60,7 +60,7 @@ CHAPTERS.push({
    chars:["tam","cam"],
    occupy:[{c:"cam",e:"tre",mode:"hide"}],
    cons:[{t:"adjEnv",c:"tam",e:"gieng",txt:"Tấm đứng bên giếng gọi Bống"},
-         {t:"listen",c:"cam",target:"tam",txt:"Cám nghe lén — kề bên nhưng không bị thấy!"}],
+         {t:"listen",c:"cam",target:"tam",txt:"Cám nghe lén, kề bên nhưng không bị thấy!"}],
    story:"@c1.nghelen.story"},
 
   {type:"place", name:"Chăn trâu đồng xa", cols:5, rows:4,
@@ -87,7 +87,7 @@ CHAPTERS.push({
   {type:"matrix", name:"Đêm hội",
    scene:"@c1.demhoi.scene",
    rows:["cam","dighe","balao"], colsM:["sandinh","baico","duongbun"],
-   clues:[{t:"mIs", c:"balao",col:"sandinh", txt:"Bà lão dọn hàng nước nơi đông người nhất — sân đình"},
+   clues:[{t:"mIs", c:"balao",col:"sandinh", txt:"Bà lão dọn hàng nước nơi đông người nhất, sân đình"},
           {t:"mNot",c:"dighe",col:"duongbun",txt:"Dì ghẻ chẳng đời nào dẫm vào bùn"},
           {t:"mNot",c:"cam",  col:"baico",   txt:"Cám chê bãi cỏ tối om, chẳng thấy hội đâu"},
           {t:"mUniq",txt:"Mỗi nơi chỉ có một người"}],

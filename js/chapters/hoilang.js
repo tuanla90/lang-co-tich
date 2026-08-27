@@ -1,5 +1,5 @@
 /* ============================================================
-   hoilang.js (chương) — HỘI LÀNG: nơi nhân vật các truyện gặp nhau.
+   hoilang.js (chương), HỘI LÀNG: nơi nhân vật các truyện gặp nhau.
    Màn được SINH TỰ ĐỘNG lúc tải trang, không viết tay từng đề.
    Đổi seed là ra đề khác; bỏ seed đi là mỗi lần mở một đề mới.
    ============================================================ */
@@ -8,16 +8,16 @@ window.CHAPTERS = window.CHAPTERS || [];
 /* Sáu nhân vật, mỗi người một địa danh của riêng mình */
 const HL_KHACH = [
   /* moc = vật làm mốc, lấy từ CHÍNH truyện của nhân vật ấy.
-     Mỗi người một hình khác nhau — hai mốc trùng hình thì manh mối hoá mơ hồ. */
+     Mỗi người một hình khác nhau, hai mốc trùng hình thì manh mối hoá mơ hồ. */
   { c:"tam",     vung:"Làng của Tấm",  moc:"gieng"  },  // giếng nuôi cá Bống
   { c:"sontinh", vung:"Núi Tản Viên",  moc:"nui"    },  // núi Tản, chứ không phải cây đa!
   { c:"bom",     vung:"Bãi chăn trâu", moc:"mocau"  },  // chiếc quạt mo bất ly thân
   { c:"khoai",   vung:"Rừng tre",      moc:"tre"    },  // bụi tre trăm đốt
   { c:"giongts", vung:"Làng Phù Đổng", moc:"noicom" },  // nồi cơm cả làng góp
-  { c:"tan",     vung:"Bến sông",      moc:"caycau" },  // cây cau — chính chàng hoá thành
+  { c:"tan",     vung:"Bến sông",      moc:"caycau" },  // cây cau, chính chàng hoá thành
 ];
 
-/* Tham số ba bậc — đã đo và chốt ở engine sinh đề */
+/* Tham số ba bậc, đã đo và chốt ở engine sinh đề */
 const HL_CAUHINH = {
   "dễ":  { co:[4,4,4,4,4,4], soMoc:1, soVatCan:4, omHet:false, doKho:"dễ"  },
   "vừa": { co:[4,4,4,4,4,5], soMoc:1, soVatCan:3, omHet:true,  doKho:"vừa" },
@@ -29,7 +29,7 @@ const HL_SCENE = {           /* chu that nam trong js/i18n/vi.js */
   "khó": "@hl.kho.scene",
 };
 
-/* Ba bậc — tham số đã đo và chốt ở engine sinh đề */
+/* Ba bậc, tham số đã đo và chốt ở engine sinh đề */
 const HL_BAC = [
   { ten:"Hội làng · dễ",  doKho:"dễ",
     co:[4,4,4,4,4,4], soMoc:1, soVatCan:4, omHet:false, seed:20260001,
@@ -52,7 +52,7 @@ const HL_BAC = [
       co: b.co, soMoc: b.soMoc, soVatCan: b.soVatCan, omHet: b.omHet,
       doKho: b.doKho, seed: b.seed,
       mocTheoNguoi: Object.fromEntries(HL_KHACH.map(k => [k.c, k.moc])),
-      canArt: "ao",             // vật cản: vũng nước — hôm nay Thuỷ Tinh không dự hội
+      canArt: "ao",             // vật cản: vũng nước, hôm nay Thuỷ Tinh không dự hội
       story: "@hl.chung.story"
     });
     if(man) levels.push(man);
@@ -74,7 +74,7 @@ const HL_BAC = [
     CHAPTERS.push({ id: 99, name: "Chương · Hội làng", title: "Hội làng", levels });
 })();
 
-/* Tham số ba bậc — dùng chung cho cả màn cố định lẫn chế độ vô tận */
+/* Tham số ba bậc, dùng chung cho cả màn cố định lẫn chế độ vô tận */
 function HL_THAMSO(){ return HL_CAUHINH; }
 
 /* Thay đề tại chỗ. Trả về chỉ số màn vô tận, hoặc -1 nếu chưa sinh được. */
@@ -98,7 +98,7 @@ function deMoiHoiLang(doKho){
   const giu = { id: LEVELS[i].id, _ch: LEVELS[i]._ch, voTan: true, doKhoChon: doKho };
   Object.keys(LEVELS[i]).forEach(k => delete LEVELS[i][k]);
   Object.assign(LEVELS[i], man, giu);
-  /* gắn lại nhãn kỹ năng + tier — thiếu là lượt chơi không được tính vào Góc cha mẹ */
+  /* gắn lại nhãn kỹ năng + tier, thiếu là lượt chơi không được tính vào Góc cha mẹ */
   if(typeof apDungNhan === "function") apDungNhan([LEVELS[i]]);
   /* Đề sinh ra SAU khi bộ dịch đã chạy lúc khởi động, nên phải tự tra từ điển,
      kẻo lời dẫn hiện nguyên khoá "@hl.votan.story". */
