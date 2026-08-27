@@ -187,6 +187,33 @@ function thu(ten, thayDoi={}){
 }
 function ap(ten, thayDoi={}){ const i=iOf(ten); Object.assign(LEVELS[i], thayDoi); load(i); }
 
+/* ===== Rà màn "đinh": màn cuối chương + màn tier 3 =====
+   Màn thường 1–10 nghiệm là lành (bé xếp thoáng tay). Riêng màn đinh mà
+   nhiều nghiệm thì cái khó bé cảm thấy là GIẢ — đặt bừa cũng trúng.
+   Gọi raKho() — ngưỡng mặc định 4, đổi bằng raKho(2). */
+function raKho(nguong=4){
+  const cuoi=new Set();
+  CHAPTERS.forEach(c=>{ const ls=c.levels.filter(l=>!l.voTan);
+    if(ls.length) cuoi.add(ls[ls.length-1].id); });
+  const ds=[];
+  LEVELS.forEach((l,i)=>{
+    if(l.type!=="place") return;
+    const laCuoi=cuoi.has(l.id), kho=l.tier===3;
+    if(!laCuoi && !kho) return;
+    const r=auditLevel(i);
+    ds.push({man:i+1, ten:l.name,
+      viTri:[laCuoi?"cuối chương":"", kho?"tier 3":""].filter(Boolean).join(" + "),
+      nghiem:r.nghiem,
+      danhGia: r.nghiem===0 ? "LỖI: không giải được"
+        : r.nghiem<=nguong ? "✓ chặt xứng vị trí" : `⚠ lỏng so với vị trí`});
+  });
+  console.table(ds);
+  const xau=ds.filter(d=>d.danhGia.startsWith("⚠"));
+  if(xau.length) console.warn(`${xau.length} màn đinh đang lỏng — xem chi tiết: audit(<màn>), thử siết: thu("Tên màn",{...})`);
+  else console.log("✓ mọi màn đinh đều chặt xứng vị trí");
+  return ds;
+}
+
 /* ===== Soát HÌNH TRÙNG =====
    Hai cột trong cùng một màn ma trận mà vẽ giống hệt nhau thì trẻ không phân biệt
    nổi — đề hoá mù mờ dù logic vẫn chặt. Gọi soatHinh() để quét cả game. */
