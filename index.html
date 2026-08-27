@@ -145,8 +145,16 @@
 <script src="js/engine.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/main.js"></script>
-<!-- Gỡ lỗi: tua màn + đo độ chặt của màn. Xoá 2 dòng này khi phát hành. -->
-<script src="js/dev.js"></script>
-<script src="js/audit.js"></script>
+<!-- Đồ nghề phát triển: CHỈ nạp khi địa chỉ có ?dev
+     Người chơi bình thường không bao giờ thấy nhãn DEV hay mở khoá sẵn chương. -->
+<script>
+if (/[?&]dev/.test(location.search)) {
+  ["js/dev.js", "js/audit.js"].forEach(function(f){
+    var t = document.createElement("script");
+    t.src = f; t.async = false;      // async=false giữ đúng thứ tự nạp
+    document.head.appendChild(t);
+  });
+}
+</script>
 </body>
 </html>
