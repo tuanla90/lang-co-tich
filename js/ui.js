@@ -32,6 +32,8 @@ function render(){
   $("scene").onclick=()=>$("scene").classList.toggle("expanded");
   const sb=$("sayBtn");
   if(sb) sb.onclick=e=>{ e.stopPropagation(); speak(`Màn ${cur+1}. ${lv.name}. ${stripTags(lv.scene)}`); };
+  /* nút loa vừa dựng lại — ẩn ngay nếu máy không có giọng tiếng Việt */
+  if(typeof capNhatNutDoc === "function") capNhatNutDoc();
 
   const list = lv.type==="matrix" ? lv.clues : lv.type==="story" ? lv.panels
            : lv.type==="hoilang" ? hlLuat(lv) : lv.cons;
@@ -112,17 +114,53 @@ function renderNav(lv){
 
 /* ===== Đọc to (Web Speech API — giọng vi-VN nếu máy có) ===== */
 function stripTags(s){ const d=document.createElement("div"); d.innerHTML=s; return d.textContent||""; }
-let voiceVN=null;
-function pickVoice(){ try{
-  voiceVN = speechSynthesis.getVoices().find(v=>(v.lang||"").toLowerCase().indexOf("vi")===0)||null;
-}catch(e){} }
-if(window.speechSynthesis){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+let voiceVN=null, daBaoThieuGiong=false;
+
+/* Chọn giọng: ưu tiên đúng vi-VN, rồi tới bất kỳ mã "vi…", cuối cùng dò theo TÊN
+   (Chrome đặt tên "Google Tiếng Việt" mà mã lại là "vi-VN"; vài máy ghi khác). */
+function pickVoice(){
+  try{
+    const vs = speechSynthesis.getVoices() || [];
+    voiceVN = vs.find(v => /^vi[-_]VN$/i.test(v.lang||""))
+           || vs.find(v => /^vi\b|^vi[-_]/i.test(v.lang||""))
+           || vs.find(v => /ti[ếe]ng\s*vi[ệe]t|vietnam/i.test(v.name||""))
+           || null;
+    capNhatNutDoc();
+  }catch(e){}
+}
+/* Không có giọng Việt thì ẩn hẳn nút loa — thà không có nút còn hơn bấm vào
+   nghe giọng tiếng Anh đọc chữ Việt. */
+function capNhatNutDoc(){
+  const an = !voiceVN;
+  document.querySelectorAll(".say").forEach(b => b.style.display = an ? "none" : "");
+  const w = document.getElementById("sayWin");
+  if(w) w.style.display = an ? "none" : "";
+}
+if(window.speechSynthesis){
+  pickVoice();
+  speechSynthesis.onvoiceschanged = pickVoice;
+  /* Chrome trả danh sách giọng RỖNG ở lần gọi đầu rồi mới nạp sau — thử lại vài nhịp,
+     kẻo nút loa bị ẩn oan trong khi máy thật ra có giọng Việt. */
+  let thu = 0;
+  const hen = setInterval(() => { if(voiceVN || ++thu > 10) clearInterval(hen); else pickVoice(); }, 300);
+}
+
 function speak(text){
   if(!window.speechSynthesis) return;
   if(speechSynthesis.speaking){ speechSynthesis.cancel(); return; }   // bấm lần nữa = dừng
+  if(!voiceVN) pickVoice();                                          // biết đâu vừa nạp xong
+  if(!voiceVN){
+    if(!daBaoThieuGiong && typeof khoe === "function"){
+      khoe('<span class="toast-ic">🔇</span><span><b>Máy chưa có giọng tiếng Việt</b>'
+         + '<i>Cài gói giọng nói tiếng Việt của hệ điều hành rồi mở lại trang là đọc được.</i></span>', 6);
+      daBaoThieuGiong = true;
+    }
+    return;                                    // KHÔNG đọc bằng giọng tiếng Anh
+  }
   const u=new SpeechSynthesisUtterance(text);
-  if(voiceVN) u.voice=voiceVN;
-  u.lang="vi-VN"; u.rate=1;
+  u.voice=voiceVN;
+  u.lang=voiceVN.lang || "vi-VN";
+  u.rate=0.95;                                 // chậm hơn chút cho trẻ nghe kịp
   speechSynthesis.speak(u);
 }
 
@@ -411,7 +449,15 @@ function renderBoard(lv){
 
     /* nền môi trường vẽ trước, nhân vật chồng lên trên (Tấm trèo cau) */
     let inner="";
-    if(e) inner+=ENVS[e].svg;
+    if(e){
+      inner+=ENVS[e].svg;
+      /* "Điểm nhấn" (mặt trời, bông súng…) chỉ vẽ ở Ô ĐẦU TIÊN của vùng.
+         Một cái ao trải 10 ô mà ô nào cũng có bông súng thì thành 10 bông — buồn cười.
+         Phần nền (sóng, cỏ) thì lặp lại được, nên tách riêng ở trường .diem */
+      const nhom = lv.env.find(v=>v.id===e);
+      if(ENVS[e].diem && nhom && nhom.cells[0][0]===x && nhom.cells[0][1]===y)
+        inner += ENVS[e].diem;
+    }
     if(blk) inner+=ENVS.rom.svg;
     if(mud&&!ch&&!e) inner+=ENVS.bunsvg.svg;
     if(ch){
