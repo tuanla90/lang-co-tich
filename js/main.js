@@ -15,6 +15,40 @@ LEVELS = CHAPTERS.flatMap(c => c.levels.map(l => {
   l.id = l.id || `c${c.id}:${l.name}`;
   return l;
 }));
+/* ===== Đa ngôn ngữ =====
+   Lời dẫn trong file chương được viết dưới dạng khoá "@c1.nuoibong.scene";
+   ở đây tra từ điển thay bằng câu thật. Đổi ngôn ngữ = nạp từ điển khác.
+   Khoá thiếu thì giữ nguyên chuỗi "@…" để lộ ra ngay, không im lặng nuốt mất. */
+const NGON_NGU = (window.I18N && I18N.vi) ? "vi" : null;
+function dich(s){
+  if(typeof s !== "string" || s[0] !== "@") return s;
+  const tu = NGON_NGU && I18N[NGON_NGU];
+  const v = tu && tu[s.slice(1)];
+  return v === undefined ? s : v;
+}
+function apDungNgonNgu(ds){
+  const thieu = [];
+  for(const l of ds){
+    for(const f of ["scene","story","reveal"]){
+      if(typeof l[f] === "string"){
+        const t = dich(l[f]);
+        if(t === l[f] && l[f][0] === "@") thieu.push(l[f].slice(1));
+        l[f] = t;
+      }
+    }
+    for(const p of (l.panels||[]))
+      for(const f of ["label","cue","after"]){
+        if(typeof p[f] === "string"){
+          const t = dich(p[f]);
+          if(t === p[f] && p[f][0] === "@") thieu.push(p[f].slice(1));
+          p[f] = t;
+        }
+      }
+  }
+  if(thieu.length) console.warn("Thiếu lời dẫn cho khoá:", thieu);
+}
+apDungNgonNgu(LEVELS);
+
 apDungNhan(LEVELS);   // gắn nhãn kỹ năng + tier cho mọi màn (skills.js)
 
 /* "Chương 1 · Tấm Cám" → "chương 1" */

@@ -23,23 +23,23 @@ const HL_CAUHINH = {
   "vừa": { co:[4,4,4,4,4,5], soMoc:1, soVatCan:3, omHet:true,  doKho:"vừa" },
   "khó": { co:[4,4,4,4,4,5], soMoc:1, soVatCan:3, omHet:true,  doKho:"khó" },
 };
-const HL_SCENE = {
-  "dễ":  "Hội làng mở rồi! <b>Mỗi hàng một người, mỗi cột một người, ai cũng cần một khoảng trống quanh mình</b> — chen sát quá thì còn xem đám rước sao được.",
-  "vừa": "Sân hội hôm nay rộng hơn, có chỗ lầy nước không đứng được. Vẫn luật cũ: <b>mỗi hàng một người, mỗi cột một người, không ai đứng sát ai</b>.",
-  "khó": "Bậc khó đây. Đừng đoán — cứ lần từng manh mối một, kiểu gì cũng ra. <b>Mỗi hàng một người, mỗi cột một người, không ai đứng sát ai.</b>",
+const HL_SCENE = {           /* chu that nam trong js/i18n/vi.js */
+  "dễ":  "@hl.de.scene",
+  "vừa": "@hl.vua.scene",
+  "khó": "@hl.kho.scene",
 };
 
 /* Ba bậc — tham số đã đo và chốt ở engine sinh đề */
 const HL_BAC = [
   { ten:"Hội làng · dễ",  doKho:"dễ",
     co:[4,4,4,4,4,4], soMoc:1, soVatCan:4, omHet:false, seed:20260001,
-    scene:"Hội làng mở rồi! Ai cũng về đúng chỗ của mình. <b>Mỗi hàng một người, mỗi cột một người, và ai cũng cần một khoảng trống quanh mình</b> — chen sát quá thì còn xem đám rước sao được." },
+    scene:"@hl.de.scene" },
   { ten:"Hội làng · vừa", doKho:"vừa",
     co:[4,4,4,4,4,5], soMoc:1, soVatCan:3, omHet:true,  seed:20260002,
-    scene:"Sân hội hôm nay rộng hơn, có chỗ lầy nước không đứng được. Vẫn luật cũ: <b>mỗi hàng một người, mỗi cột một người, không ai đứng sát ai</b>." },
+    scene:"@hl.vua.scene" },
   { ten:"Hội làng · khó", doKho:"khó",
     co:[4,4,4,4,4,5], soMoc:1, soVatCan:3, omHet:true,  seed:20260003,
-    scene:"Bậc khó đây. Đừng đoán — cứ lần từng manh mối một, kiểu gì cũng ra. <b>Mỗi hàng một người, mỗi cột một người, không ai đứng sát ai.</b>" },
+    scene:"@hl.kho.scene" },
 ];
 
 (function(){
@@ -53,7 +53,7 @@ const HL_BAC = [
       doKho: b.doKho, seed: b.seed,
       mocTheoNguoi: Object.fromEntries(HL_KHACH.map(k => [k.c, k.moc])),
       canArt: "ao",             // vật cản: vũng nước — hôm nay Thuỷ Tinh không dự hội
-      story: "Ai cũng có chỗ đứng của mình. Hội làng đông mà chẳng ai phải chen ai."
+      story: "@hl.chung.story"
     });
     if(man) levels.push(man);
   }
@@ -66,7 +66,7 @@ const HL_BAC = [
     tenVung: HL_KHACH.map(k => k.vung),
     mocTheoNguoi: Object.fromEntries(HL_KHACH.map(k => [k.c, k.moc])),
     canArt: "ao", ...HL_CAUHINH["vừa"], seed: 20260010,
-    scene: HL_SCENE["vừa"], story: "Giải xong một đề, hội lại dọn ra đề mới!"
+    scene: HL_SCENE["vừa"], story: "@hl.votan.story"
   });
   if(oVoTan){ oVoTan.voTan = true; levels.push(oVoTan); }
 
@@ -91,7 +91,7 @@ function deMoiHoiLang(doKho){
       canArt: "ao", ...c,
       seed: (Math.random() * 2e9) | 0,
       scene: HL_SCENE[doKho] || HL_SCENE["vừa"],
-      story: "Giải xong một đề, hội lại dọn ra đề mới!"
+      story: "@hl.votan.story"
     });
   }
   if(!man) return -1;
@@ -100,6 +100,9 @@ function deMoiHoiLang(doKho){
   Object.assign(LEVELS[i], man, giu);
   /* gắn lại nhãn kỹ năng + tier — thiếu là lượt chơi không được tính vào Góc cha mẹ */
   if(typeof apDungNhan === "function") apDungNhan([LEVELS[i]]);
+  /* Đề sinh ra SAU khi bộ dịch đã chạy lúc khởi động, nên phải tự tra từ điển,
+     kẻo lời dẫn hiện nguyên khoá "@hl.votan.story". */
+  if(typeof apDungNgonNgu === "function") apDungNgonNgu([LEVELS[i]]);
   return i;
 }
 

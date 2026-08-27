@@ -29,8 +29,8 @@ window.CHAPTERS = window.CHAPTERS || [];
     co:[4,4,4,4], soMoc:1, soVatCan:1, omHet:false,
     doKho:"dễ", seed:20270013, khongGianToiThieu:48,
     mocTheoNguoi:MOC, canArt:"rom",
-    scene:"Giặc tan, làng mở <b>phiên chợ Tết</b> mừng thắng trận! Bốn hàng quán dọn ra — <b>mỗi hàng một chủ, ai đứng hàng nấy</b>, mỗi hàng một cột một người, và nhớ chừa lối đi: <b>không ai đứng sát ai</b>.",
-    story:"Chợ mở hàng may mắn — khách kéo đến mỗi lúc một đông…"});
+    scene:"@ct.mohang.scene",
+    story:"@ct.mohang.story"});
   if(m1) levels.push(m1);
 
   const m2 = taoManHoiLang({
@@ -38,8 +38,8 @@ window.CHAPTERS = window.CHAPTERS || [];
     co:[4,4,4,4,5], soMoc:2, soMocDu:true, soVatCan:2, omHet:true,
     doKho:"vừa", seed:20280156,
     mocTheoNguoi:MOC, mocArts:["cayda","gieng"], canArt:"rom",
-    scene:"Phú ông cũng dọn hàng thóc ra bán! Chợ giờ có <b>hai chỗ hẹn</b>: gốc <b>cây đa</b> và bờ <b>giếng</b> — nhìn kỹ manh mối xem AI phải đứng cạnh CHỖ NÀO, đừng nhầm hai nơi với nhau.",
-    story:"Kẻ bán người mua tấp nập, mà nhờ xếp khéo nên chẳng ai chen ai."});
+    scene:"@ct.dongkhach.scene",
+    story:"@ct.dongkhach.story"});
   if(m2) levels.push(m2);
 
   const m3 = taoManHoiLang({
@@ -47,8 +47,8 @@ window.CHAPTERS = window.CHAPTERS || [];
     co:[4,4,4,4,4], soMoc:2, soMocDu:true, soVatCan:3, omHet:true,
     doKho:"khó", seed:20301534, datTuDo:true,
     mocTheoNguoi:MOC, mocArts:["cayda","gieng"], canArt:"rom",
-    scene:"Phiên cuối năm, lệ làng nới tay: <b>ai thích đứng đâu thì đứng</b>… nhưng <b>luật vẫn là luật</b> — đứng lạc khỏi hàng của mình là trống chèo nhắc ngay đấy! (Lần này không ai chặn tay con đâu — tự xếp, tự soi luật nhé.)",
-    story:"Chợ vãn, ai về hàng nấy gọn gàng. Ông từ giữ đình gật gù: “Trẻ con làng này xếp chợ còn khéo hơn người lớn.”<br><b>— Hết phiên chợ Tết —</b><br>Ra giêng, trên núi Tản Viên nghe đâu có chuyện lạ: <b>vua Hùng sắp kén rể</b>…"});
+    scene:"@ct.vancho.scene",
+    story:"@ct.vancho.story"});
   if(m3) levels.push(m3);
 
   if(levels.length)
